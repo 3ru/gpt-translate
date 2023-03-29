@@ -1,0 +1,28 @@
+{
+  "name": "gpt-translate",
+  "version": "1.0.0",
+  "description": "Markdown Translation powered by ChatGPT",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3ru/gpt-translate.git"
+  },
+  "author": "Ryuya",
+  "license": "MIT",
+  "scripts": {
+    "build": "npx ncc build src/index.ts -o dist"
+  },
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/exec": "^1.1.1",
+    "@actions/github": "^5.1.1",
+    "gpt-3-encoder": "^1.1.4",
+    "openai": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.9",
+    "prettier": "^2.8.7",
+    "tslint": "^6.1.3",
+    "typescript": "^5.0.2"
+  }
+}

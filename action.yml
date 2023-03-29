@@ -1,0 +1,15 @@
+name: 'GPT Translate'
+description: 'Markdown Translation powered by ChatGPT'
+inputs:
+  token:
+    description: 'GITHUB_TOKEN or a `repo` scoped Personal Access Token (PAT)'
+    default: ${{ github.token }}
+  apikey:
+    description: 'OpenAI API Key'
+    required: true
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
+branding:
+  icon: 'globe'
+  color: 'green'
