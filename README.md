@@ -1,4 +1,6 @@
 # 🌎 Markdown Translation BOT 
+[![Maintainability](https://api.codeclimate.com/v1/badges/a13ea4f37913ba6ba570/maintainability)](https://codeclimate.com/github/3ru/gpt-translate/maintainability)
+[![GPT Translate](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml/badge.svg)](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml)
 
 This GitHub action translates your markdown files into multiple languages using the GPT-3.5 model.
 
