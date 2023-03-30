@@ -1,7 +1,7 @@
 {
   "name": "gpt-translate",
   "version": "1.0.0",
-  "description": "Markdown Translation powered by ChatGPT",
+  "description": "Markdown translation into any other language powered by ChatGPT",
   "main": "lib/index.js",
   "repository": {
     "type": "git",
