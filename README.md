@@ -1,16 +1,17 @@
-# 🌎 Markdown Translation BOT 
+# 🌎 Markdown Translation BOT
 [![Maintainability](https://api.codeclimate.com/v1/badges/a13ea4f37913ba6ba570/maintainability)](https://codeclimate.com/github/3ru/gpt-translate/maintainability)
 [![GPT Translate](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml/badge.svg)](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml)
 
 This GitHub action translates your markdown files into multiple languages using the GPT-3.5 model.
 
-```md
-# Summary of this README by GPT-4
-- Markdown Translation BOT is a GitHub Action that uses GPT-3.5 to translate markdown files into multiple languages.
-- To use, create a comment with /gpt-translate or /gt in an issue or pull request, specifying input/output file paths and target language.
-- The translated files will be created as a pull request (on issues) or added to the existing pull request as a new commit (on pull requests).
-```
+<br/>
 
+> Summary of this README by GPT-4
+> - This is a GitHub Action that uses GPT-3.5 to translate markdown files into multiple languages.
+> - To use, create a comment with /gpt-translate or /gt in an issue or pull request, specifying input/output file paths and target language.
+> - The translated files will be created as a pull request (on issues) or added to the existing pull request as a new commit (on pull requests).
+
+<br/>
 
 <details><summary>🧐 Current Status</summary>
 <p>
@@ -33,12 +34,12 @@ I'm considering per-directory translation and multiple selection features for fu
 
 - Enable `Read and write permissions`
 - Enable `Allow GitHub Actions to create and approve pull requests`
-![permissions](https://user-images.githubusercontent.com/69892552/228692074-d8d009a8-9272-4023-97b1-3cbc637d5d84.jpg)
+  ![permissions](https://user-images.githubusercontent.com/69892552/228692074-d8d009a8-9272-4023-97b1-3cbc637d5d84.jpg)
 
 #### 2. Settings > Secrets and variables > Actions
 
 - Set API key(`OPENAI_API_KEY`) to secrets
-![secrets](https://user-images.githubusercontent.com/69892552/228692421-22d7db33-4e32-4f28-b166-45b4d3ce2b11.jpg)
+  ![secrets](https://user-images.githubusercontent.com/69892552/228692421-22d7db33-4e32-4f28-b166-45b4d3ce2b11.jpg)
 
 
 ### GitHub Actions Workflow Settings
