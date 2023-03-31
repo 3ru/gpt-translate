@@ -38,7 +38,7 @@ I'm considering per-directory translation and multiple selection features for fu
 
 #### 2. Settings > Secrets and variables > Actions
 
-- Set API key(`OPENAI_API_KEY`) to secrets
+- Set [your API key](https://platform.openai.com/account/api-keys)(`OPENAI_API_KEY`) to secrets
   ![secrets](https://user-images.githubusercontent.com/69892552/228692421-22d7db33-4e32-4f28-b166-45b4d3ce2b11.jpg)
 
 
