@@ -4,14 +4,19 @@
 
 This GitHub action translates your markdown files into multiple languages using the GPT-3.5 model.
 
+### ⚠️**Warning**
+The OpenAI API is currently not available for free. You need an API Key issued with a `paid account` to use this workflow.
+<img width="387" alt="image" src="https://github.com/3ru/gpt-translate/assets/69892552/8c803edb-85ef-41ee-a4be-be52b3a30eba">
+
 <br/>
 
-> Summary of this README by GPT-4
+<details><summary> Summary of this README by GPT-4</summary>
+<p>
 > - This is a GitHub Action that uses GPT-3.5 to translate markdown files into multiple languages.
 > - To use, create a comment with /gpt-translate or /gt in an issue or pull request, specifying input/output file paths and target language.
 > - The translated files will be created as a pull request (on issues) or added to the existing pull request as a new commit (on pull requests).
-
-<br/>
+</p>
+</details> 
 
 <details><summary>🧐 Current Status</summary>
 <p>
@@ -38,7 +43,7 @@ I'm considering per-directory translation and multiple selection features for fu
 
 #### 2. Settings > Secrets and variables > Actions
 
-- Set API key(`OPENAI_API_KEY`) to secrets
+- Set [your API key](https://platform.openai.com/account/api-keys)(`OPENAI_API_KEY`) to secrets
   ![secrets](https://user-images.githubusercontent.com/69892552/228692421-22d7db33-4e32-4f28-b166-45b4d3ce2b11.jpg)
 
 
