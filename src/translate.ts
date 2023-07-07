@@ -1,6 +1,7 @@
 import fs from 'fs/promises'
+import path from 'path'
 import { translate } from './gpt'
-import { isPR, createFile, isFileExists } from './utils'
+import { generatePRBody, isPR } from './utils'
 import {
   gitCheckout,
   gitCommitPush,
@@ -10,6 +11,12 @@ import {
   gitSetConfig,
 } from './git'
 import { context } from '@actions/github'
+import {
+  createFile,
+  generateOutputFilePaths,
+  getFilePathsWithExtension,
+  isFileExists,
+} from './file'
 
 export const publishTranslate = async (
   inputFilePath: string,
@@ -19,23 +26,40 @@ export const publishTranslate = async (
   await gitSetConfig()
   const branch = isPR() ? await gitCheckout() : await gitCreateBranch()
 
-  const content = await fs.readFile(inputFilePath, 'utf-8')
-  const translated = await translate(content, targetLang)
+  const isMultipleFileSelected = path.basename(inputFilePath).includes('*')
 
-  // Check if the translation is same as the original
-  if (await isFileExists(outputFilePath)) {
-    const fileContent = await fs.readFile(outputFilePath, 'utf-8')
-    if (fileContent === translated) {
-      await gitPostComment(
-        '⛔ The result of translation was same as the existed output file.',
+  const inputFilePaths = isMultipleFileSelected
+    ? await getFilePathsWithExtension(
+        path.dirname(inputFilePath),
+        path.extname(inputFilePath),
       )
-      return
+    : [inputFilePath]
+
+  const outputFilePaths = isMultipleFileSelected
+    ? generateOutputFilePaths(inputFilePaths, outputFilePath)
+    : [outputFilePath]
+
+  const processFiles = inputFilePaths.map(async (inputFile, i) => {
+    const content = await fs.readFile(inputFile, 'utf-8')
+    const translated = await translate(content, targetLang)
+
+    // Check if the translation is same as the original
+    if (await isFileExists(outputFilePaths[i])) {
+      const fileContent = await fs.readFile(outputFilePaths[i], 'utf-8')
+      if (fileContent === translated) {
+        await gitPostComment(
+          '⛔ The result of translation was same as the existed output file.',
+        )
+        return
+      }
     }
-  }
 
-  await createFile(translated, outputFilePath)
+    await createFile(translated, outputFilePaths[i])
+  })
 
-  await gitCommitPush(branch, outputFilePath)
+  await Promise.all(processFiles)
+
+  await gitCommitPush(branch, outputFilePaths)
   if (isPR()) {
     await gitPostComment('🎉Translation completed!')
     return
@@ -43,14 +67,12 @@ export const publishTranslate = async (
 
   const issueNumber = context.issue.number
   const title = '🌐 Add LLM Translations'
-  const body = `## ✅ LLM Translation completed
-  |**Name**|**Value**|
-  |---|---|
-  |**Source**|\`${inputFilePath}\`|
-  |**Output**|\`${outputFilePath}\`|
-  |**Language**|${targetLang}|
-  |**Issue**|#${issueNumber}|
-  `
+  const body = generatePRBody(
+    inputFilePaths,
+    outputFilePaths,
+    targetLang,
+    issueNumber,
+  )
 
   await gitCreatePullRequest(branch, title, body)
   await gitPostComment('🎉Translation PR created!')

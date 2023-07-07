@@ -51,10 +51,20 @@ export const gitCreateBranch = async () => {
   return branch
 }
 
-export const gitCommitPush = async (branch: string, filePath: string) => {
+export const gitCommitPush = async (
+  branch: string,
+  filePath: string | string[],
+) => {
   info('Committing and pushing...')
 
-  await exec('git', ['add', filePath])
+  if (Array.isArray(filePath)) {
+    for (const file of filePath) {
+      await exec('git', ['add', file])
+    }
+  } else {
+    await exec('git', ['add', filePath])
+  }
+
   await exec('git', ['commit', '-m', `💬Generate LLM translations`])
   await exec('git', ['push', 'origin', branch])
 }
