@@ -15,6 +15,6 @@ jobs:
       - name: Run GPT Translate
         if: |
           contains(github.event.comment.body, '/gt')
-        uses: 3ru/gpt-translate@v1.0
+        uses: 3ru/gpt-translate@master
         with:
           apikey: ${{ secrets.OPENAI_API_KEY }}
