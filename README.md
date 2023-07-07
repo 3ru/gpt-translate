@@ -10,15 +10,6 @@ The OpenAI API is currently not available for free. You need an API Key issued w
 
 <br/>
 
-<details><summary> Summary of this README by GPT-4</summary>
-<p>
-
-> - This is a GitHub Action that uses GPT-3.5 to translate markdown files into multiple languages.
-> - To use, create a comment with /gpt-translate or /gt in an issue or pull request, specifying input/output file paths and target language.
-> - The translated files will be created as a pull request (on issues) or added to the existing pull request as a new commit (on pull requests).
-</p>
-</details> 
-
 <details><summary>🧐 Current Status</summary>
 <p>
 
@@ -28,7 +19,6 @@ The OpenAI API is currently not available for free. You need an API Key issued w
 
 These limitations prevent API abuse by non-trusted parties.
 
-I'm considering per-directory translation and multiple selection features for future implementation.
 </p>
 </details> 
 
@@ -79,7 +69,7 @@ jobs:
         if: |
           contains(github.event.comment.body, '/gpt-translate') || 
           contains(github.event.comment.body, '/gt')
-        uses: 3ru/gpt-translate@v1.0
+        uses: 3ru/gpt-translate@v1.1
         with:
           apikey: ${{ secrets.OPENAI_API_KEY }}
 ```
@@ -107,8 +97,25 @@ If you keep commenting on a PR, new commits will continuously be added to that P
 ```
 Translate `README.md` into traditional Chinese and place it under the `zh-TW` directory.
 
+### v1.1 Multiple file support
+
+You can now translate multiple files at once by specifying a wildcard in the input file path.
+
+Here is a sample
+```
+/gpt-translate *.md *.ja.md Japanese
+```
+If `A.md` and `B.md` are in the root directory, the output will be `A.ja.md` and `B.ja.md`. The file names are inherited from the input files.
+I am considering outputting the file with an arbitrary file name, but if you have a smart idea, please suggest it through the issue!
+
 ## 🌐 Supported Languages
 Any language interpreted by GPT-3.5
+
+## 🏘️ Community
+- [Discussions](https://github.com/3ru/gpt-translate/discussions)
+  - If you have any questions, please feel free to ask in the GitHub Discussions :)
+- [Issues](https://github.com/3ru/gpt-translate/issues)
+  - Please submit bugs and new feature suggestions to GitHub Issues
 
 ## 📃 License
 MIT License
