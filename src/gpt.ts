@@ -38,7 +38,7 @@ export const askGPT = async (text: string, prompt: string): Promise<string> => {
   return content
 }
 
-export const translate = async (
+export const gptTranslate = async (
   text: string,
   targetLanguage: string,
   maxToken = 2000,

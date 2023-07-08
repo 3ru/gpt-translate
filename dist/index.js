@@ -18071,6 +18071,36 @@ exports.availableFileTypes = ['.md'];
 
 /***/ }),
 
+/***/ 4960:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.extractor = void 0;
+const core_1 = __nccwpck_require__(5091);
+const extractor = () => {
+    const inputFilesRaw = (0, core_1.getInput)('inputFiles');
+    const outputFilesRaw = (0, core_1.getInput)('outputFiles');
+    const languagesRaw = (0, core_1.getInput)('languages');
+    const inputFiles = inputFilesRaw
+        ? inputFilesRaw.split(' ').filter((v) => v)
+        : [];
+    const outputFiles = outputFilesRaw
+        ? outputFilesRaw.split(' ').filter((v) => v)
+        : [];
+    const languages = languagesRaw ? languagesRaw.split(' ').filter((v) => v) : [];
+    return {
+        inputFiles,
+        outputFiles,
+        languages,
+    };
+};
+exports.extractor = extractor;
+
+
+/***/ }),
+
 /***/ 1213:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -18201,7 +18231,7 @@ const gitCheckout = async () => {
 exports.gitCheckout = gitCheckout;
 const gitCreateBranch = async () => {
     (0, core_1.info)('Creating branch...');
-    const branch = `gt${github_1.context.issue.number}-${(0, crypto_1.randomUUID)()}`;
+    const branch = `gt-${(0, crypto_1.randomUUID)()}`;
     await (0, exec_1.exec)('git', ['checkout', '-b', branch]);
     return branch;
 };
@@ -18209,9 +18239,7 @@ exports.gitCreateBranch = gitCreateBranch;
 const gitCommitPush = async (branch, filePath) => {
     (0, core_1.info)('Committing and pushing...');
     if (Array.isArray(filePath)) {
-        for (const file of filePath) {
-            await (0, exec_1.exec)('git', ['add', file]);
-        }
+        await (0, exec_1.exec)('git', ['add', ...filePath]);
     }
     else {
         await (0, exec_1.exec)('git', ['add', filePath]);
@@ -18262,7 +18290,7 @@ exports.authorizeUser = authorizeUser;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.translate = exports.askGPT = void 0;
+exports.gptTranslate = exports.askGPT = void 0;
 const core_1 = __nccwpck_require__(5091);
 const openai_1 = __nccwpck_require__(6761);
 const gpt_3_encoder_1 = __nccwpck_require__(7706);
@@ -18290,7 +18318,7 @@ const askGPT = async (text, prompt) => {
     return content;
 };
 exports.askGPT = askGPT;
-const translate = async (text, targetLanguage, maxToken = 2000, splitter = `\n\n`) => {
+const gptTranslate = async (text, targetLanguage, maxToken = 2000, splitter = `\n\n`) => {
     // TODO: Improve prompt (trusting user input currently)
     const prompt = `Please translate the given text into ${targetLanguage} and output it in markdown format.`;
     let translated = '';
@@ -18309,7 +18337,7 @@ const translate = async (text, targetLanguage, maxToken = 2000, splitter = `\n\n
     (0, core_1.info)('Translation completed!');
     return translated;
 };
-exports.translate = translate;
+exports.gptTranslate = gptTranslate;
 
 
 /***/ }),
@@ -18323,7 +18351,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.publishTranslate = void 0;
+exports.createTranslatedFiles = exports.translateByManual = exports.translateByCommand = void 0;
 const promises_1 = __importDefault(__nccwpck_require__(3292));
 const path_1 = __importDefault(__nccwpck_require__(1017));
 const gpt_1 = __nccwpck_require__(1461);
@@ -18331,7 +18359,9 @@ const utils_1 = __nccwpck_require__(6218);
 const git_1 = __nccwpck_require__(5939);
 const github_1 = __nccwpck_require__(603);
 const file_1 = __nccwpck_require__(1213);
-const publishTranslate = async (inputFilePath, outputFilePath, targetLang) => {
+const const_1 = __nccwpck_require__(9611);
+const core_1 = __nccwpck_require__(5091);
+const translateByCommand = async (inputFilePath, outputFilePath, targetLang) => {
     await (0, git_1.gitSetConfig)();
     const branch = (0, utils_1.isPR)() ? await (0, git_1.gitCheckout)() : await (0, git_1.gitCreateBranch)();
     const isMultipleFileSelected = path_1.default.basename(inputFilePath).includes('*');
@@ -18341,20 +18371,7 @@ const publishTranslate = async (inputFilePath, outputFilePath, targetLang) => {
     const outputFilePaths = isMultipleFileSelected
         ? (0, file_1.generateOutputFilePaths)(inputFilePaths, outputFilePath)
         : [outputFilePath];
-    const processFiles = inputFilePaths.map(async (inputFile, i) => {
-        const content = await promises_1.default.readFile(inputFile, 'utf-8');
-        const translated = await (0, gpt_1.translate)(content, targetLang);
-        // Check if the translation is same as the original
-        if (await (0, file_1.isFileExists)(outputFilePaths[i])) {
-            const fileContent = await promises_1.default.readFile(outputFilePaths[i], 'utf-8');
-            if (fileContent === translated) {
-                await (0, git_1.gitPostComment)('⛔ The result of translation was same as the existed output file.');
-                return;
-            }
-        }
-        await (0, file_1.createFile)(translated, outputFilePaths[i]);
-    });
-    await Promise.all(processFiles);
+    await (0, exports.createTranslatedFiles)(inputFilePaths, outputFilePaths, targetLang);
     await (0, git_1.gitCommitPush)(branch, outputFilePaths);
     if ((0, utils_1.isPR)()) {
         await (0, git_1.gitPostComment)('🎉Translation completed!');
@@ -18366,7 +18383,57 @@ const publishTranslate = async (inputFilePath, outputFilePath, targetLang) => {
     await (0, git_1.gitCreatePullRequest)(branch, title, body);
     await (0, git_1.gitPostComment)('🎉Translation PR created!');
 };
-exports.publishTranslate = publishTranslate;
+exports.translateByCommand = translateByCommand;
+const translateByManual = async (inputFiles, outputFiles, languages) => {
+    if (!inputFiles.length) {
+        (0, core_1.info)('No input files specified. Skip translation.');
+        return;
+    }
+    if (!inputFiles.length || !outputFiles.length || !languages.length) {
+        throw new Error('Error: For push execution, all three parameters (inputFiles, outputFiles and language ) are required');
+    }
+    if (outputFiles.length !== languages.length) {
+        throw new Error('Error: outputFiles and language must be same length.');
+    }
+    const outputFilePaths = outputFiles.map((outputFile) => {
+        return (0, file_1.generateOutputFilePaths)(inputFiles, outputFile);
+    });
+    await Promise.all(languages.map((language, index) => (0, exports.createTranslatedFiles)(inputFiles, outputFilePaths[index], language)));
+    await (0, git_1.gitSetConfig)();
+    const branch = await (0, git_1.gitCreateBranch)();
+    const title = '🌐 Add LLM Translations';
+    await (0, git_1.gitCommitPush)(branch, outputFilePaths.flat());
+    const body = (0, utils_1.generatePRBody)(inputFiles, outputFilePaths, languages);
+    await (0, git_1.gitCreatePullRequest)(branch, title, body);
+};
+exports.translateByManual = translateByManual;
+/*
+ * Parallel creation of translation files
+ * inputFilePaths and outputFilePaths must be same length and same order
+ */
+const createTranslatedFiles = async (inputFilePaths, outputFilePaths, targetLang) => {
+    const processFiles = inputFilePaths.map(async (inputFile, i) => {
+        const ext = path_1.default.extname(inputFile);
+        if (const_1.availableFileTypes.includes('.' + ext)) {
+            (0, core_1.setFailed)(`Error: File type ${ext} is not supported.`);
+            process.exit(1);
+        }
+        const content = await promises_1.default.readFile(inputFile, 'utf-8');
+        const translated = await (0, gpt_1.gptTranslate)(content, targetLang);
+        // Check if the translation is same as the original
+        if (await (0, file_1.isFileExists)(outputFilePaths[i])) {
+            const fileContent = await promises_1.default.readFile(outputFilePaths[i], 'utf-8');
+            if (fileContent === translated) {
+                (0, core_1.info)('⛔ The result of translation was same as the existed output file.');
+                return;
+            }
+        }
+        (0, core_1.info)(`Create Translated File ${outputFilePaths[i]}`);
+        await (0, file_1.createFile)(translated, outputFilePaths[i]);
+    });
+    await Promise.all(processFiles);
+};
+exports.createTranslatedFiles = createTranslatedFiles;
 
 
 /***/ }),
@@ -18435,16 +18502,34 @@ const removeSymbols = (input) => {
     return input.replace(/[^\w\s]/gi, '');
 };
 const generatePRBody = (inputFilePaths, outputFilePaths, targetLang, issueNumber) => {
-    const generateRow = (label, filePaths) => filePaths
-        .map((filePath, i) => `${i > 0 ? '|' : `|**${label}**`}|\`${filePath}\`|`)
-        .join('\n');
+    const generateRow = (label, filePaths) => {
+        let result = [];
+        if (Array.isArray(filePaths[0])) {
+            // filePaths: string[][]
+            let cnt = -1;
+            filePaths.forEach((subArr) => {
+                // subArr: string[]
+                subArr.forEach((filePath) => {
+                    cnt++;
+                    return result.push(`${cnt > 0 ? '|' : `|**${label}**`}|\`${filePath}\`|`);
+                });
+            });
+        }
+        else {
+            // filePaths: string[]
+            filePaths.forEach((filePath, i) => {
+                return result.push(`${i > 0 ? '|' : `|**${label}**`}|\`${filePath}\`|`);
+            });
+        }
+        return result.join('\n');
+    };
     return `## ✅ LLM Translation completed
   |**Name**|**Value**|
   |---|---|
   ${generateRow('Source', inputFilePaths)}
   ${generateRow('Output', outputFilePaths)}
-  |**Language**|${targetLang}|
-  |**Issue**|#${issueNumber}|
+  |**Language**|${Array.isArray(targetLang) ? targetLang.join(', ') : targetLang}|
+  ${issueNumber ? `|**Issue**|#${issueNumber}|` : ''}
   `;
 };
 exports.generatePRBody = generatePRBody;
@@ -18692,15 +18777,33 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const utils_1 = __nccwpck_require__(6218);
 const translate_1 = __nccwpck_require__(2739);
 const git_1 = __nccwpck_require__(5939);
+const extract_1 = __nccwpck_require__(4960);
+const github_1 = __nccwpck_require__(603);
+const core_1 = __nccwpck_require__(5091);
 async function main() {
-    const isAuthorized = await (0, git_1.authorizeUser)();
-    if (!isAuthorized) {
-        await (0, utils_1.postError)('You have no permission to use this bot.');
+    switch (github_1.context.eventName) {
+        case 'issue_comment':
+            const isAuthorized = await (0, git_1.authorizeUser)();
+            if (!isAuthorized) {
+                await (0, utils_1.postError)('You have no permission to use this bot.');
+            }
+            const { inputFilePath, outputFilePath, targetLang } = await (0, utils_1.getCommandParams)();
+            await (0, translate_1.translateByCommand)(inputFilePath, outputFilePath, targetLang);
+            break;
+        case 'push':
+            // ⚠ Experimental Feature
+            // Translate any file from the parameter specification.
+            // Multiple output and target languages can be selected.
+            // [IMPORTANT]
+            // outputFiles must be specified using wildcards.
+            const { inputFiles, outputFiles, languages } = (0, extract_1.extractor)();
+            await (0, translate_1.translateByManual)(inputFiles, outputFiles, languages);
+            break;
+        default:
+            await (0, utils_1.postError)('This event is not supported.');
     }
-    const { inputFilePath, outputFilePath, targetLang } = await (0, utils_1.getCommandParams)();
-    await (0, translate_1.publishTranslate)(inputFilePath, outputFilePath, targetLang);
 }
-main().catch((e) => (0, utils_1.postError)(e));
+main().catch((e) => (0, core_1.setFailed)(e));
 
 })();
 

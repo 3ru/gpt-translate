@@ -75,21 +75,42 @@ const removeSymbols = (input: string): string => {
 
 export const generatePRBody = (
   inputFilePaths: string[],
-  outputFilePaths: string[],
-  targetLang: string,
-  issueNumber: number,
+  outputFilePaths: string[] | string[][],
+  targetLang: string | string[],
+  issueNumber?: number,
 ) => {
-  const generateRow = (label: string, filePaths: string[]) =>
-    filePaths
-      .map((filePath, i) => `${i > 0 ? '|' : `|**${label}**`}|\`${filePath}\`|`)
-      .join('\n')
+  const generateRow = (label: string, filePaths: string[] | string[][]) => {
+    let result: string[] = []
+
+    if (Array.isArray(filePaths[0])) {
+      // filePaths: string[][]
+      let cnt = -1
+      filePaths.forEach((subArr) => {
+        // subArr: string[]
+        subArr.forEach((filePath: string) => {
+          cnt++
+          return result.push(
+            `${cnt > 0 ? '|' : `|**${label}**`}|\`${filePath}\`|`,
+          )
+        })
+      })
+    } else {
+      // filePaths: string[]
+      filePaths.forEach((filePath, i) => {
+        return result.push(`${i > 0 ? '|' : `|**${label}**`}|\`${filePath}\`|`)
+      })
+    }
+    return result.join('\n')
+  }
 
   return `## ✅ LLM Translation completed
   |**Name**|**Value**|
   |---|---|
   ${generateRow('Source', inputFilePaths)}
   ${generateRow('Output', outputFilePaths)}
-  |**Language**|${targetLang}|
-  |**Issue**|#${issueNumber}|
+  |**Language**|${
+    Array.isArray(targetLang) ? targetLang.join(', ') : targetLang
+  }|
+  ${issueNumber ? `|**Issue**|#${issueNumber}|` : ''}
   `
 }

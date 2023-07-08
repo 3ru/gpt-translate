@@ -1,15 +1,36 @@
 import { getCommandParams, postError } from './utils'
-import { publishTranslate } from './translate'
+import { translateByCommand, translateByManual } from './translate'
 import { authorizeUser } from './git'
+import { extractor } from './extract'
+import { context } from '@actions/github'
+import { setFailed } from '@actions/core'
 
 async function main() {
-  const isAuthorized = await authorizeUser()
-  if (!isAuthorized) {
-    await postError('You have no permission to use this bot.')
-  }
+  switch (context.eventName) {
+    case 'issue_comment':
+      const isAuthorized = await authorizeUser()
+      if (!isAuthorized) {
+        await postError('You have no permission to use this bot.')
+      }
+      const { inputFilePath, outputFilePath, targetLang } =
+        await getCommandParams()
+      await translateByCommand(inputFilePath, outputFilePath, targetLang)
 
-  const { inputFilePath, outputFilePath, targetLang } = await getCommandParams()
-  await publishTranslate(inputFilePath, outputFilePath, targetLang)
+      break
+    case 'push':
+      // ⚠ Experimental Feature
+      // Translate any file from the parameter specification.
+      // Multiple output and target languages can be selected.
+      // [IMPORTANT]
+      // outputFiles must be specified using wildcards.
+
+      const { inputFiles, outputFiles, languages } = extractor()
+      await translateByManual(inputFiles, outputFiles, languages)
+
+      break
+    default:
+      await postError('This event is not supported.')
+  }
 }
 
-main().catch((e) => postError(e))
+main().catch((e) => setFailed(e))

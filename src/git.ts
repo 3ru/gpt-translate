@@ -45,7 +45,7 @@ export const gitCheckout = async () => {
 
 export const gitCreateBranch = async () => {
   info('Creating branch...')
-  const branch = `gt${context.issue.number}-${randomUUID()}`
+  const branch = `gt-${randomUUID()}`
 
   await exec('git', ['checkout', '-b', branch])
   return branch
@@ -58,9 +58,7 @@ export const gitCommitPush = async (
   info('Committing and pushing...')
 
   if (Array.isArray(filePath)) {
-    for (const file of filePath) {
-      await exec('git', ['add', file])
-    }
+    await exec('git', ['add', ...filePath])
   } else {
     await exec('git', ['add', filePath])
   }

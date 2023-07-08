@@ -1,6 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
-import { translate } from './gpt'
+import { gptTranslate } from './gpt'
 import { generatePRBody, isPR } from './utils'
 import {
   gitCheckout,
@@ -17,8 +17,10 @@ import {
   getFilePathsWithExtension,
   isFileExists,
 } from './file'
+import { availableFileTypes } from './const'
+import { info, setFailed } from '@actions/core'
 
-export const publishTranslate = async (
+export const translateByCommand = async (
   inputFilePath: string,
   outputFilePath: string,
   targetLang: string,
@@ -39,25 +41,7 @@ export const publishTranslate = async (
     ? generateOutputFilePaths(inputFilePaths, outputFilePath)
     : [outputFilePath]
 
-  const processFiles = inputFilePaths.map(async (inputFile, i) => {
-    const content = await fs.readFile(inputFile, 'utf-8')
-    const translated = await translate(content, targetLang)
-
-    // Check if the translation is same as the original
-    if (await isFileExists(outputFilePaths[i])) {
-      const fileContent = await fs.readFile(outputFilePaths[i], 'utf-8')
-      if (fileContent === translated) {
-        await gitPostComment(
-          '⛔ The result of translation was same as the existed output file.',
-        )
-        return
-      }
-    }
-
-    await createFile(translated, outputFilePaths[i])
-  })
-
-  await Promise.all(processFiles)
+  await createTranslatedFiles(inputFilePaths, outputFilePaths, targetLang)
 
   await gitCommitPush(branch, outputFilePaths)
   if (isPR()) {
@@ -76,4 +60,78 @@ export const publishTranslate = async (
 
   await gitCreatePullRequest(branch, title, body)
   await gitPostComment('🎉Translation PR created!')
+}
+
+export const translateByManual = async (
+  inputFiles: string[],
+  outputFiles: string[],
+  languages: string[],
+) => {
+  if (!inputFiles.length) {
+    info('No input files specified. Skip translation.')
+    return
+  }
+
+  if (!inputFiles.length || !outputFiles.length || !languages.length) {
+    throw new Error(
+      'Error: For push execution, all three parameters (inputFiles, outputFiles and language ) are required',
+    )
+  }
+  if (outputFiles.length !== languages.length) {
+    throw new Error('Error: outputFiles and language must be same length.')
+  }
+
+  const outputFilePaths: string[][] = outputFiles.map((outputFile) => {
+    return generateOutputFilePaths(inputFiles, outputFile)
+  })
+
+  await Promise.all(
+    languages.map((language, index) =>
+      createTranslatedFiles(inputFiles, outputFilePaths[index], language),
+    ),
+  )
+
+  await gitSetConfig()
+  const branch = await gitCreateBranch()
+  const title = '🌐 Add LLM Translations'
+  await gitCommitPush(branch, outputFilePaths.flat())
+  const body = generatePRBody(inputFiles, outputFilePaths, languages)
+  await gitCreatePullRequest(branch, title, body)
+}
+
+/*
+ * Parallel creation of translation files
+ * inputFilePaths and outputFilePaths must be same length and same order
+ */
+export const createTranslatedFiles = async (
+  inputFilePaths: string[],
+  outputFilePaths: string[],
+  targetLang: string,
+) => {
+  const processFiles = inputFilePaths.map(async (inputFile, i) => {
+    const ext = path.extname(inputFile)
+    if (availableFileTypes.includes('.' + ext)) {
+      setFailed(`Error: File type ${ext} is not supported.`)
+      process.exit(1)
+    }
+
+    const content = await fs.readFile(inputFile, 'utf-8')
+    const translated = await gptTranslate(content, targetLang)
+
+    // Check if the translation is same as the original
+    if (await isFileExists(outputFilePaths[i])) {
+      const fileContent = await fs.readFile(outputFilePaths[i], 'utf-8')
+      if (fileContent === translated) {
+        info(
+          '⛔ The result of translation was same as the existed output file.',
+        )
+        return
+      }
+    }
+
+    info(`Create Translated File ${outputFilePaths[i]}`)
+    await createFile(translated, outputFilePaths[i])
+  })
+
+  await Promise.all(processFiles)
 }
