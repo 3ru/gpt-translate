@@ -18301,8 +18301,9 @@ if (!API_KEY) {
 const configuration = new openai_1.Configuration({ apiKey: API_KEY });
 const openAIApi = new openai_1.OpenAIApi(configuration);
 const askGPT = async (text, prompt) => {
-    const { data: { choices: [{ message: { content: content } = { content: '' } }], }, } = await openAIApi.createChatCompletion({
-        model: 'gpt-3.5-turbo',
+    const { data: { choices: [{ message: { content: content } = { content: '' } }], }, } = await openAIApi
+        .createChatCompletion({
+        model: 'gpt-3.5-turbo-16k',
         messages: [
             {
                 role: openai_1.ChatCompletionRequestMessageRoleEnum.System,
@@ -18311,6 +18312,11 @@ const askGPT = async (text, prompt) => {
             { role: openai_1.ChatCompletionRequestMessageRoleEnum.User, content: text },
         ],
         top_p: 0.5,
+    })
+        .catch((err) => {
+        (0, core_1.error)(err);
+        (0, core_1.setFailed)('Error: If the status code is 400, the file exceeds 16,000 tokens without line breaks. \nPlease open one line as appropriate.');
+        process.exit(1);
     });
     if (content === '') {
         (0, core_1.info)('Possible Error: Translation result is empty');
@@ -18318,7 +18324,7 @@ const askGPT = async (text, prompt) => {
     return content;
 };
 exports.askGPT = askGPT;
-const gptTranslate = async (text, targetLanguage, maxToken = 2000, splitter = `\n\n`) => {
+const gptTranslate = async (text, targetLanguage, maxToken = 16000, splitter = `\n\n`) => {
     // TODO: Improve prompt (trusting user input currently)
     const prompt = `Please translate the given text into ${targetLanguage} and output it in markdown format.`;
     let translated = '';

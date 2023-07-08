@@ -1,4 +1,4 @@
-import { getInput, info, setFailed } from '@actions/core'
+import { error, getInput, info, setFailed } from '@actions/core'
 import {
   ChatCompletionRequestMessageRoleEnum,
   Configuration,
@@ -19,17 +19,25 @@ export const askGPT = async (text: string, prompt: string): Promise<string> => {
     data: {
       choices: [{ message: { content: content } = { content: '' } }],
     },
-  } = await openAIApi.createChatCompletion({
-    model: 'gpt-3.5-turbo',
-    messages: [
-      {
-        role: ChatCompletionRequestMessageRoleEnum.System,
-        content: prompt,
-      },
-      { role: ChatCompletionRequestMessageRoleEnum.User, content: text },
-    ],
-    top_p: 0.5,
-  })
+  } = await openAIApi
+    .createChatCompletion({
+      model: 'gpt-3.5-turbo-16k',
+      messages: [
+        {
+          role: ChatCompletionRequestMessageRoleEnum.System,
+          content: prompt,
+        },
+        { role: ChatCompletionRequestMessageRoleEnum.User, content: text },
+      ],
+      top_p: 0.5,
+    })
+    .catch((err) => {
+      error(err)
+      setFailed(
+        'Error: If the status code is 400, the file exceeds 16,000 tokens without line breaks. \nPlease open one line as appropriate.',
+      )
+      process.exit(1)
+    })
 
   if (content === '') {
     info('Possible Error: Translation result is empty')
@@ -41,7 +49,7 @@ export const askGPT = async (text: string, prompt: string): Promise<string> => {
 export const gptTranslate = async (
   text: string,
   targetLanguage: string,
-  maxToken = 2000,
+  maxToken = 16000,
   splitter = `\n\n`,
 ): Promise<string> => {
   // TODO: Improve prompt (trusting user input currently)
