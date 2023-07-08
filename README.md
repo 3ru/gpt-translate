@@ -13,7 +13,7 @@ The OpenAI API is currently not available for free. You need an API Key issued w
 <details><summary>🧐 Current Status</summary>
 <p>
 
-- The action supports translating single **markdown files only**.
+- The action supports translating **markdown files only**.
 
 - The command can be executed exclusively by individuals with **write permissions to the repository**.
 
