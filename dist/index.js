@@ -18077,9 +18077,21 @@ exports.availableFileTypes = ['.md'];
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.extractor = void 0;
+exports.extractInput = exports.getCommandParams = void 0;
 const core_1 = __nccwpck_require__(5091);
-const extractor = () => {
+const github_1 = __nccwpck_require__(603);
+const validate_1 = __nccwpck_require__(6469);
+const getCommandParams = async () => {
+    var _a;
+    const comment = (_a = github_1.context.payload.comment) === null || _a === void 0 ? void 0 : _a.body;
+    if (!comment)
+        (0, core_1.setFailed)('Error: Comment could not be retrieved correctly.');
+    const regex = /\/(?:gpt-translate|gt)\s+(\S+)\s+(\S+)\s+(\S+)/;
+    const match = regex.exec(comment);
+    return (0, validate_1.commandValidator)(comment, match);
+};
+exports.getCommandParams = getCommandParams;
+const extractInput = () => {
     const inputFilesRaw = (0, core_1.getInput)('inputFiles');
     const outputFilesRaw = (0, core_1.getInput)('outputFiles');
     const languagesRaw = (0, core_1.getInput)('languages');
@@ -18090,13 +18102,19 @@ const extractor = () => {
         ? outputFilesRaw.split(' ').filter((v) => v)
         : [];
     const languages = languagesRaw ? languagesRaw.split(' ').filter((v) => v) : [];
+    // validate input
+    const isValidInput = inputFiles.every((v) => (0, validate_1.isValidFileType)(v)) &&
+        outputFiles.every((v) => (0, validate_1.isValidFileType)(v));
+    if (!isValidInput) {
+        throw new Error('Invalid input. Please check the inputFiles and outputFiles parameters');
+    }
     return {
         inputFiles,
         outputFiles,
         languages,
     };
 };
-exports.extractor = extractor;
+exports.extractInput = extractInput;
 
 
 /***/ }),
@@ -18144,6 +18162,24 @@ const isFileExists = async (inputPath) => {
     }
 };
 exports.isFileExists = isFileExists;
+/**
+ * Replace the part with '**' with the rest
+ */
+function replaceWildcard(inputArray, outputArray) {
+    const output = [...outputArray];
+    const indexOfAsteriskAsterisk = outputArray.indexOf('**');
+    if (indexOfAsteriskAsterisk !== -1) {
+        output.splice(indexOfAsteriskAsterisk, 1, ...inputArray.slice(indexOfAsteriskAsterisk));
+    }
+    return output;
+}
+/**
+ * Extracts the extension from a filename string
+ */
+function extractFileExtension(filename) {
+    const match = filename.match(/\.\w+(\.\w+)?$/);
+    return match ? match[0] : null;
+}
 /*
  * Get all file paths in a directory with a specific extension.
  * @param directoryPath The path to the directory to search.
@@ -18168,20 +18204,31 @@ exports.getFilePathsWithExtension = getFilePathsWithExtension;
  * @param {string[]} inputFilePaths - The array of input file paths
  * @param {string} outputFilePath - The format of the output file path. The '*' character in the output file path is replaced by the filename of each input file path
  * @returns {string[]} An array of output file paths.
+ * @throws {Error} Throws an error if the outputFilePath does not contain extensions(.md) or wildcards(*)
  *
- * @example
- * // returns ['a/c/c.ja.md', 'a/c/d.ja.md']
- * generateOutputFilePaths(['a/b/c.md', 'a/b/d.md'], 'a/c/*.ja.md');
  */
 const generateOutputFilePaths = (inputFilePaths, outputFilePath) => {
-    const outputDirectory = path_1.default.dirname(outputFilePath);
-    const outputPathFormat = path_1.default
-        .basename(outputFilePath)
-        .replace('*', '{filename}');
+    const outputSegments = outputFilePath.replace('./', '').split('/');
+    const outputFilePattern = outputSegments.pop();
+    const outputFileExt = extractFileExtension(outputFilePattern) || '';
+    const outputFilenameWithoutExt = outputFilePattern.replace(outputFileExt, '');
     return inputFilePaths.map((inputFilePath) => {
-        const filenameWithoutExtension = path_1.default.basename(inputFilePath, path_1.default.extname(inputFilePath));
-        const newFilename = outputPathFormat.replace('{filename}', filenameWithoutExtension);
-        return path_1.default.join(outputDirectory, newFilename);
+        const inputSegments = inputFilePath.split('/');
+        const inputFile = inputSegments.pop();
+        const inputFileExt = extractFileExtension(inputFile) || '';
+        const inputFilenameWithoutExt = inputFile.replace(inputFileExt, '');
+        const resolvedPathSegments = replaceWildcard(inputSegments, outputSegments); // Resolve path segments
+        // If output file pattern contains '*', replace it with the input filename
+        if (outputFilenameWithoutExt.includes('*')) {
+            const finalExt = outputFileExt || inputFileExt; // If output extension isn't specified, use input file extension
+            const finalFilename = `${inputFilenameWithoutExt}${finalExt}`; // Concatenate filename and extension
+            resolvedPathSegments.push(finalFilename);
+        }
+        else {
+            // Otherwise, use the specified output filename
+            resolvedPathSegments.push(outputFilePattern);
+        }
+        return resolvedPathSegments.join('/');
     });
 };
 exports.generateOutputFilePaths = generateOutputFilePaths;
@@ -18315,7 +18362,7 @@ const askGPT = async (text, prompt) => {
     })
         .catch((err) => {
         (0, core_1.error)(err);
-        (0, core_1.setFailed)('Error: If the status code is 400, the file exceeds 16,000 tokens without line breaks. \nPlease open one line as appropriate.');
+        (0, core_1.notice)('If the status code is 400, the file exceeds 16,000 tokens without line breaks. \nPlease open one line as appropriate.');
         process.exit(1);
     });
     if (content === '') {
@@ -18365,7 +18412,6 @@ const utils_1 = __nccwpck_require__(6218);
 const git_1 = __nccwpck_require__(5939);
 const github_1 = __nccwpck_require__(603);
 const file_1 = __nccwpck_require__(1213);
-const const_1 = __nccwpck_require__(9611);
 const core_1 = __nccwpck_require__(5091);
 const translateByCommand = async (inputFilePath, outputFilePath, targetLang) => {
     await (0, git_1.gitSetConfig)();
@@ -18404,6 +18450,7 @@ const translateByManual = async (inputFiles, outputFiles, languages) => {
     const outputFilePaths = outputFiles.map((outputFile) => {
         return (0, file_1.generateOutputFilePaths)(inputFiles, outputFile);
     });
+    // TODO: Dealing with request limits (503 error)
     await Promise.all(languages.map((language, index) => (0, exports.createTranslatedFiles)(inputFiles, outputFilePaths[index], language)));
     await (0, git_1.gitSetConfig)();
     const branch = await (0, git_1.gitCreateBranch)();
@@ -18419,11 +18466,6 @@ exports.translateByManual = translateByManual;
  */
 const createTranslatedFiles = async (inputFilePaths, outputFilePaths, targetLang) => {
     const processFiles = inputFilePaths.map(async (inputFile, i) => {
-        const ext = path_1.default.extname(inputFile);
-        if (const_1.availableFileTypes.includes('.' + ext)) {
-            (0, core_1.setFailed)(`Error: File type ${ext} is not supported.`);
-            process.exit(1);
-        }
         const content = await promises_1.default.readFile(inputFile, 'utf-8');
         const translated = await (0, gpt_1.gptTranslate)(content, targetLang);
         // Check if the translation is same as the original
@@ -18445,53 +18487,15 @@ exports.createTranslatedFiles = createTranslatedFiles;
 /***/ }),
 
 /***/ 6218:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.generatePRBody = exports.isPR = exports.postError = exports.getCommandParams = void 0;
-const path_1 = __importDefault(__nccwpck_require__(1017));
+exports.generatePRBody = exports.removeSymbols = exports.isPR = exports.postError = void 0;
 const core_1 = __nccwpck_require__(5091);
 const git_1 = __nccwpck_require__(5939);
 const github_1 = __nccwpck_require__(603);
-const const_1 = __nccwpck_require__(9611);
-const getCommandParams = async () => {
-    var _a;
-    const comment = (_a = github_1.context.payload.comment) === null || _a === void 0 ? void 0 : _a.body;
-    if (!comment)
-        (0, core_1.setFailed)('Error: Comment could not be retrieved correctly.');
-    const regex = /\/(?:gpt-translate|gt)\s+(\S+)\s+(\S+)\s+(\S+)/;
-    const match = regex.exec(comment);
-    return commandValidator(comment, match);
-};
-exports.getCommandParams = getCommandParams;
-const commandValidator = async (userCommand, match) => {
-    if (!match || match.length < 4) {
-        await (0, exports.postError)(`Invalid command: \`${userCommand}\`\n${const_1.COMMAND_USAGE}`);
-    }
-    const [, inputFilePath, outputFilePath, targetLang] = match;
-    const isValidFileType = (filename) => const_1.availableFileTypes.some((type) => filename.endsWith(type));
-    if (!isValidFileType(inputFilePath) || !isValidFileType(outputFilePath)) {
-        const availableFileTypesString = const_1.availableFileTypes.join(', ');
-        await (0, exports.postError)(`Error: File must be a valid file type.\n${availableFileTypesString}`);
-    }
-    const inputFileName = path_1.default.basename(inputFilePath);
-    const outputFileName = path_1.default.basename(outputFilePath);
-    // If multiple files are specified, input and output must be specified in the same way.
-    if ((inputFileName.includes('*') && !outputFileName.includes('*')) ||
-        (!inputFileName.includes('*') && outputFileName.includes('*'))) {
-        await (0, exports.postError)(`Error: Multiple file specification mismatch.\n${inputFileName} and ${outputFileName}`);
-    }
-    return {
-        inputFilePath,
-        outputFilePath,
-        targetLang: removeSymbols(targetLang),
-    };
-};
 const postError = async (message) => {
     await (0, git_1.gitPostComment)(`❌${message}`);
     (0, core_1.setFailed)(message);
@@ -18507,6 +18511,7 @@ exports.isPR = isPR;
 const removeSymbols = (input) => {
     return input.replace(/[^\w\s]/gi, '');
 };
+exports.removeSymbols = removeSymbols;
 const generatePRBody = (inputFilePaths, outputFilePaths, targetLang, issueNumber) => {
     const generateRow = (label, filePaths) => {
         let result = [];
@@ -18539,6 +18544,54 @@ const generatePRBody = (inputFilePaths, outputFilePaths, targetLang, issueNumber
   `;
 };
 exports.generatePRBody = generatePRBody;
+
+
+/***/ }),
+
+/***/ 6469:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.commandValidator = exports.isValidFileType = void 0;
+const const_1 = __nccwpck_require__(9611);
+const path_1 = __importDefault(__nccwpck_require__(1017));
+const utils_1 = __nccwpck_require__(6218);
+const isValidFileType = (filename) => {
+    // Allow input file extension inheritance by asterisk in addition to normal file formats
+    const fileTypes = [...const_1.availableFileTypes, '*'];
+    return fileTypes.some((type) => filename.endsWith(type));
+};
+exports.isValidFileType = isValidFileType;
+const commandValidator = async (userCommand, match) => {
+    if (!match || match.length < 4) {
+        await (0, utils_1.postError)(`Invalid command: \`${userCommand}\`\n${const_1.COMMAND_USAGE}`);
+    }
+    const [, inputFilePath, outputFilePath, targetLang] = match;
+    // const isValidFileType = (filename: string) =>
+    //   availableFileTypes.some((type) => filename.endsWith(type))
+    if (!(0, exports.isValidFileType)(inputFilePath) || !(0, exports.isValidFileType)(outputFilePath)) {
+        const availableFileTypesString = const_1.availableFileTypes.join(', ');
+        await (0, utils_1.postError)(`Error: File must be a valid file type.\n${availableFileTypesString}`);
+    }
+    const inputFileName = path_1.default.basename(inputFilePath);
+    const outputFileName = path_1.default.basename(outputFilePath);
+    // If multiple files are specified, input and output must be specified in the same way.
+    if ((inputFileName.includes('*') && !outputFileName.includes('*')) ||
+        (!inputFileName.includes('*') && outputFileName.includes('*'))) {
+        await (0, utils_1.postError)(`Error: Multiple file specification mismatch.\n${inputFileName} and ${outputFileName}`);
+    }
+    return {
+        inputFilePath,
+        outputFilePath,
+        targetLang: (0, utils_1.removeSymbols)(targetLang),
+    };
+};
+exports.commandValidator = commandValidator;
 
 
 /***/ }),
@@ -18793,7 +18846,7 @@ async function main() {
             if (!isAuthorized) {
                 await (0, utils_1.postError)('You have no permission to use this bot.');
             }
-            const { inputFilePath, outputFilePath, targetLang } = await (0, utils_1.getCommandParams)();
+            const { inputFilePath, outputFilePath, targetLang } = await (0, extract_1.getCommandParams)();
             await (0, translate_1.translateByCommand)(inputFilePath, outputFilePath, targetLang);
             break;
         case 'push':
@@ -18802,7 +18855,7 @@ async function main() {
             // Multiple output and target languages can be selected.
             // [IMPORTANT]
             // outputFiles must be specified using wildcards.
-            const { inputFiles, outputFiles, languages } = (0, extract_1.extractor)();
+            const { inputFiles, outputFiles, languages } = (0, extract_1.extractInput)();
             await (0, translate_1.translateByManual)(inputFiles, outputFiles, languages);
             break;
         default:

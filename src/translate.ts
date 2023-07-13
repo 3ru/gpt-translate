@@ -17,8 +17,7 @@ import {
   getFilePathsWithExtension,
   isFileExists,
 } from './file'
-import { availableFileTypes } from './const'
-import { info, setFailed } from '@actions/core'
+import { info } from '@actions/core'
 
 export const translateByCommand = async (
   inputFilePath: string,
@@ -85,6 +84,7 @@ export const translateByManual = async (
     return generateOutputFilePaths(inputFiles, outputFile)
   })
 
+  // TODO: Dealing with request limits (503 error)
   await Promise.all(
     languages.map((language, index) =>
       createTranslatedFiles(inputFiles, outputFilePaths[index], language),
@@ -109,12 +109,6 @@ export const createTranslatedFiles = async (
   targetLang: string,
 ) => {
   const processFiles = inputFilePaths.map(async (inputFile, i) => {
-    const ext = path.extname(inputFile)
-    if (availableFileTypes.includes('.' + ext)) {
-      setFailed(`Error: File type ${ext} is not supported.`)
-      process.exit(1)
-    }
-
     const content = await fs.readFile(inputFile, 'utf-8')
     const translated = await gptTranslate(content, targetLang)
 

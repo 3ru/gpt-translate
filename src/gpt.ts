@@ -1,4 +1,4 @@
-import { error, getInput, info, setFailed } from '@actions/core'
+import { error, getInput, info, notice, setFailed } from '@actions/core'
 import {
   ChatCompletionRequestMessageRoleEnum,
   Configuration,
@@ -33,8 +33,8 @@ export const askGPT = async (text: string, prompt: string): Promise<string> => {
     })
     .catch((err) => {
       error(err)
-      setFailed(
-        'Error: If the status code is 400, the file exceeds 16,000 tokens without line breaks. \nPlease open one line as appropriate.',
+      notice(
+        'If the status code is 400, the file exceeds 16,000 tokens without line breaks. \nPlease open one line as appropriate.',
       )
       process.exit(1)
     })

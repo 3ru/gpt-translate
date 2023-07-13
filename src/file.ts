@@ -32,6 +32,32 @@ export const isFileExists = async (inputPath: string) => {
   }
 }
 
+/**
+ * Replace the part with '**' with the rest
+ */
+function replaceWildcard(inputArray: string[], outputArray: string[]) {
+  const output = [...outputArray]
+  const indexOfAsteriskAsterisk = outputArray.indexOf('**')
+
+  if (indexOfAsteriskAsterisk !== -1) {
+    output.splice(
+      indexOfAsteriskAsterisk,
+      1,
+      ...inputArray.slice(indexOfAsteriskAsterisk),
+    )
+  }
+
+  return output
+}
+
+/**
+ * Extracts the extension from a filename string
+ */
+function extractFileExtension(filename: string): string | null {
+  const match = filename.match(/\.\w+(\.\w+)?$/)
+  return match ? match[0] : null
+}
+
 /*
  * Get all file paths in a directory with a specific extension.
  * @param directoryPath The path to the directory to search.
@@ -62,29 +88,36 @@ export const getFilePathsWithExtension = async (
  * @param {string[]} inputFilePaths - The array of input file paths
  * @param {string} outputFilePath - The format of the output file path. The '*' character in the output file path is replaced by the filename of each input file path
  * @returns {string[]} An array of output file paths.
+ * @throws {Error} Throws an error if the outputFilePath does not contain extensions(.md) or wildcards(*)
  *
- * @example
- * // returns ['a/c/c.ja.md', 'a/c/d.ja.md']
- * generateOutputFilePaths(['a/b/c.md', 'a/b/d.md'], 'a/c/*.ja.md');
  */
 export const generateOutputFilePaths = (
   inputFilePaths: string[],
   outputFilePath: string,
 ): string[] => {
-  const outputDirectory = path.dirname(outputFilePath)
-  const outputPathFormat = path
-    .basename(outputFilePath)
-    .replace('*', '{filename}')
+  const outputSegments = outputFilePath.replace('./', '').split('/')
+  const outputFilePattern = outputSegments.pop()!
+  const outputFileExt = extractFileExtension(outputFilePattern) || ''
+  const outputFilenameWithoutExt = outputFilePattern.replace(outputFileExt, '')
 
   return inputFilePaths.map((inputFilePath) => {
-    const filenameWithoutExtension = path.basename(
-      inputFilePath,
-      path.extname(inputFilePath),
-    )
-    const newFilename = outputPathFormat.replace(
-      '{filename}',
-      filenameWithoutExtension,
-    )
-    return path.join(outputDirectory, newFilename)
+    const inputSegments = inputFilePath.split('/')
+    const inputFile = inputSegments.pop()!
+    const inputFileExt = extractFileExtension(inputFile) || ''
+    const inputFilenameWithoutExt = inputFile.replace(inputFileExt, '')
+
+    const resolvedPathSegments = replaceWildcard(inputSegments, outputSegments) // Resolve path segments
+
+    // If output file pattern contains '*', replace it with the input filename
+    if (outputFilenameWithoutExt.includes('*')) {
+      const finalExt = outputFileExt || inputFileExt // If output extension isn't specified, use input file extension
+      const finalFilename = `${inputFilenameWithoutExt}${finalExt}` // Concatenate filename and extension
+      resolvedPathSegments.push(finalFilename)
+    } else {
+      // Otherwise, use the specified output filename
+      resolvedPathSegments.push(outputFilePattern)
+    }
+
+    return resolvedPathSegments.join('/')
   })
 }

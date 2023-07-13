@@ -1,7 +1,7 @@
-import { getCommandParams, postError } from './utils'
+import { postError } from './utils'
 import { translateByCommand, translateByManual } from './translate'
 import { authorizeUser } from './git'
-import { extractor } from './extract'
+import { extractInput, getCommandParams } from './extract'
 import { context } from '@actions/github'
 import { setFailed } from '@actions/core'
 
@@ -24,7 +24,7 @@ async function main() {
       // [IMPORTANT]
       // outputFiles must be specified using wildcards.
 
-      const { inputFiles, outputFiles, languages } = extractor()
+      const { inputFiles, outputFiles, languages } = extractInput()
       await translateByManual(inputFiles, outputFiles, languages)
 
       break
