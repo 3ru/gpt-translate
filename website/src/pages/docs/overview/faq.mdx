@@ -1,0 +1,43 @@
+---
+title: Frequently Asked Questions
+description: Frequently asked questions
+layout: none
+---
+
+import { DocumentTextIcon, LanguageIcon } from '@heroicons/react/24/outline'
+import { Card } from '../../../components/Card'
+
+# Frequently Asked Questions
+
+Here are some frequently asked questions (FAQs) and solutions to common problems.
+
+---
+
+### Which files can I translate?
+
+Currently only `markdown files` are available.
+
+<Card
+  icon={<DocumentTextIcon />}
+  title='Supported File Formats'
+  href='/docs/references/supported-file-format'
+/>
+
+---
+
+### Which languages can it translate into?
+
+Almost any language
+
+<Card
+  icon={<LanguageIcon />}
+  title='Supported Languages'
+  href='/docs/references/supported-language'
+/>
+
+---
+
+### Is it free?
+
+This GitHub Actions workflow itself is free, but the OpenAI API used for translation is paid for.
+[OpenAI API Pricing](https://openai.com/pricing)

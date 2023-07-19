@@ -1,0 +1,64 @@
+---
+title: OpenAI API Key
+description: Preparation of APIs to be entrusted with translation
+---
+
+import { Callout } from 'nextra-theme-docs'
+import { Steps } from 'nextra/components'
+
+If you already have an OpenAI account, skip to [key generation](#key-generation).
+
+## Account Sign Up
+
+<Steps>
+
+### Head to [OpenAI website](https://platform.openai.com/).
+
+### Create an account
+
+You can then log in with the email address and password linked to your OpenAI account or with your existing Google or Microsoft account.
+
+</Steps>
+
+## Billing Settings
+
+<Callout type='warning'>
+  The OpenAI API is currently not available for free. You need an API Key issued
+  with a paid account to use this workflow, or you will get
+  `openai.error.RateLimitError`.
+</Callout>
+
+<Steps>
+
+### Go to the [Billing overview](https://platform.openai.com/billing).
+
+![img](https://i.gyazo.com/24dfb9b63f01a695d0f646d7fd9a5d8b.png)
+
+### Set up paid account
+
+![img](https://i.gyazo.com/47c80a01c9cceae9d67ab299114bedd7.png)
+
+</Steps>
+
+## Key Generation
+
+<Steps>
+
+### Go to the [API Keys page](https://platform.openai.com/account/api-keys).
+
+![API Keys page](https://i.gyazo.com/5acc5d6417413a2f34fc52075bd52b74.png)
+
+### Create a new API Key
+
+Click the `Create new secret key` button.
+![Create new secret key](https://i.gyazo.com/b2797f624de75fb28e1732ead38f2676.png)
+
+Enter the name of the API Key and click the `Create secret key` button.
+![secret key name input](https://i.gyazo.com/bfc3c62a78de701b53c2f05a37df32bb.png)
+
+### Copy the API Key.
+
+This key will be used in the next GitHub repository setup. Do not close the tab or make a temporary note of it somewhere.
+![secret key](https://i.gyazo.com/b1ab2746efe410e0d25c530b150f94bb.png)
+
+</Steps>

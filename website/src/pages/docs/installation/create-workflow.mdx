@@ -1,0 +1,66 @@
+---
+title: Create GitHub Actions Workflow
+description: Workflow Setup
+---
+
+import { BookOpenIcon, BookmarkSquareIcon } from '@heroicons/react/24/outline'
+import { Card } from '../../../components/Card'
+
+There are many ways to set up a workflow.
+
+## By Command
+
+The following is a sample configuration for performing translations in command format.
+
+```yaml filename=".github/workflows/gpt-translate.yml"
+name: GPT Translate
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  gpt_translate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run GPT Translate
+        if: |
+          contains(github.event.comment.body, '/gpt-translate') || 
+          contains(github.event.comment.body, '/gt')
+        uses: 3ru/gpt-translate@v1.1
+        with:
+          apikey: ${{ secrets.OPENAI_API_KEY }}
+```
+
+#### Required
+
+- Provide the `OPENAI_API_KEY` as apiKey.
+  - Necessary for OpenAI model use
+- Checkout in advance(`actions/checkout@v3`).
+  - It must be checkedout before running GPT Translate to retrieve the file contents of the translation.
+
+Once the above workflow is set up and pushed, the translation can be performed by entering commands in the **comments of issues** and **PRs**.
+[Demo](https://github.com/3ru/gpt-translate/issues/15)
+
+## Usage
+
+Please refer to the following for details on translation execution.
+
+<Card
+  icon={<BookOpenIcon />}
+  title='Command Reference'
+  href='/docs/references/command'
+/>
+
+## Other Workflow Example
+
+For other workflows, please refer to the samples below.
+
+<Card
+  icon={<BookmarkSquareIcon />}
+  title='Examples'
+  href='/docs/examples/command'
+/>

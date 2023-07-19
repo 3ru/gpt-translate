@@ -1,0 +1,26 @@
+---
+title: Repository Settings
+description: Configure Key and executor settings.
+---
+
+import { Steps } from 'nextra/components'
+
+
+This is a setting in the repository where you want to do the translation.
+
+<Steps>
+
+### Permissions `Settings > Actions > General`
+
+- Enable `Read and write permissions`
+- Enable `Allow GitHub Actions to create and approve pull requests`
+![permissions](https://user-images.githubusercontent.com/69892552/228692074-d8d009a8-9272-4023-97b1-3cbc637d5d84.jpg)
+
+
+### Secrets `Settings > Secrets and variables > Actions`
+
+Set [your OpenAI API key](./openai-key#copy-the-api-key) as `OPENAI_API_KEY` to secrets
+![secrets](https://user-images.githubusercontent.com/69892552/228692421-22d7db33-4e32-4f28-b166-45b4d3ce2b11.jpg)
+
+
+</Steps>

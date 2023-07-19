@@ -1,0 +1,146 @@
+---
+title: Path Specification
+description: How to specify paths to various files using our own notation
+---
+
+import { BeforeAfter } from '../../../components/BeforeAfter'
+import { Callout, FileTree } from 'nextra/components'
+
+# Path Specification
+
+This action allows you to specify a file with its own notation.
+
+If you have a better notation idea, please feel free to suggest it in [issues](https://github.com/3ru/gpt-translate/issues?q=is%3Aissue+is%3Aopen) or [discussions](https://github.com/3ru/gpt-translate/discussions) :)
+
+---
+
+### Single file specification
+
+<FileTree>
+  <FileTree.File name='README.md' active />
+</FileTree>
+
+- Single file `readme` only
+  - `README.md`
+  - `./README.md`
+
+---
+
+### Multiple file specification
+
+<FileTree>
+  <FileTree.File name='README.md' />
+  <FileTree.Folder name='EN' defaultOpen>
+    <FileTree.File name='getting-started.md' active />
+    <FileTree.File name='setup.md' active />
+  </FileTree.Folder>
+</FileTree>
+
+- All markdown files under the EN directory
+  - `EN/*.md`
+  - `./EN/*.md`
+
+---
+
+### Multiple nested file specification
+
+<Callout type='warning'>
+  Unstable due to under development. Currently, the command cannot specify
+  nested files in bulk, but only in [action input
+  format](/docs/references/input.mdx).
+</Callout>
+
+<FileTree>
+  <FileTree.File name='README.md' />
+  <FileTree.Folder name='EN' defaultOpen>
+    <FileTree.File name='setup.md' active />
+    <FileTree.Folder name='foo' defaultOpen>
+      <FileTree.File name='bar.md' active />
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+- To specify `setup.md` and `bar.md`
+  - `EN/setup.md`, `EN/foo/bar.md`
+  - `./EN/setup.md`, `./EN/foo/bar.md`
+
+On command, it must be executed twice.
+
+## Wildcard output path specification
+
+For example, you want to output an input file to a location under a specified directory.
+At this time, if you want to maintain the directory structure of the input files, you can use the following command.
+
+```
+/gpt-translate EN/foo/bar.md JA/**/*.md Japanese
+```
+
+<BeforeAfter
+  before={
+    <FileTree>
+      <FileTree.Folder name='EN' defaultOpen>
+        <FileTree.Folder name='foo' defaultOpen>
+          <FileTree.File name='bar.md' active />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree>
+  }
+  after={
+    <FileTree>
+      <FileTree.Folder name='EN' defaultOpen>
+        <FileTree.Folder name='foo' defaultOpen>
+          <FileTree.File name='bar.md' />
+        </FileTree.Folder>
+      </FileTree.Folder>
+      <FileTree.Folder name='JA' defaultOpen>
+        <FileTree.Folder name='foo' defaultOpen>
+          <FileTree.File name='bar.md' active />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree>
+  }
+/>
+
+The point here is that the path structure of the input file is maintained by `/**/`.
+The `EN` and `JA` are properly overwritten because their distances from the root directory match.
+
+The file format can also be inherited, so you can comment the following
+
+```
+/gpt-translate EN/foo/bar.md JA/**/* Japanese
+```
+
+### Another use case
+
+Writes all markdowns under any directory to the specified extension under the specified directory.
+
+```
+/gpt-translate EN/foo/*.md **/*.ja.md Japanese
+```
+
+<BeforeAfter
+  before={
+    <FileTree>
+      <FileTree.Folder name='EN' defaultOpen>
+        <FileTree.Folder name='foo' defaultOpen>
+          <FileTree.File name='bar.md' active />
+          <FileTree.File name='baz.md' active />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree>
+  }
+  after={
+    <FileTree>
+      <FileTree.Folder name='EN' defaultOpen>
+        <FileTree.Folder name='foo' defaultOpen>
+          <FileTree.File name='bar.md' />
+          <FileTree.File name='baz.md' />
+          <FileTree.File name='bar.ja.md' active />
+          <FileTree.File name='baz.ja.md' active />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree>
+  }
+/>
+
+Thus, you can use `**` to inherit directories and `*` to inherit filenames.

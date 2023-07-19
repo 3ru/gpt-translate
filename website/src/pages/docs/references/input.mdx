@@ -1,0 +1,28 @@
+---
+title: Action Inputs
+description: Arguments that can be passed to the action
+---
+
+import { BookOpenIcon } from '@heroicons/react/24/outline'
+import { Card } from '../../../components/Card'
+
+# Action Inputs
+
+Required fields are asterisked.
+
+| Name          | Description       | type                     |
+| ------------- | ----------------- | ------------------------ |
+| `apikey`\*    | OpenAI API Key    | `secrets`                |
+| `inputFiles`  | target file paths | `space-delimited string` |
+| `outputFiles` | output paths      | `space-delimited string` |
+| `languages`   | target language   | `space-delimited string` |
+
+---
+
+### Related
+
+<Card
+  icon={<BookOpenIcon />}
+  title='Path Specification'
+  href='/docs/references/path-builder'
+/>

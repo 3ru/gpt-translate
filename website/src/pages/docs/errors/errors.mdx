@@ -1,0 +1,22 @@
+---
+title: Error Handling
+description: Common Errors and how to handle them
+---
+
+# Error Handling
+
+## Bot Errors
+
+### `You have no permission to use`
+
+This bot limits the execution of translations by commands, etc. to only **Write** permission users of the repository.
+The OpenAI API is pay-as-you-go and I have put this restriction in place to protect users of my software from malicious users.
+
+If you want to give command execution to any user, please invite them to the repository **collaborator**.
+
+## API Errors
+
+### `503` Error
+
+Perhaps a limit on the number of calls to the OpenAI API has been reached. Please try again later.
+[Help wanted](https://github.com/3ru/gpt-translate/issues/18) for essential solution.

@@ -1,0 +1,97 @@
+---
+title: Command Based
+description: Example of translation execution by command input on comment
+---
+
+# Command Based
+
+Translate by typing commands in the comments of Issues or PR.
+
+## Workflow Settings Overview
+
+```yaml filename="gpt-translate.yml"
+name: GPT Translate
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  gpt_translate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run GPT Translate
+        if: |
+          contains(github.event.comment.body, '/gpt-translate') ||
+          contains(github.event.comment.body, '/gt')
+        uses: 3ru/gpt-translate@v1.1
+        with:
+          apikey: ${{ secrets.OPENAI_API_KEY }}
+```
+
+## Explanation
+
+```yaml {2-3}
+on:
+  issue_comment:
+    types: [created]
+```
+
+Each time an issue or pull request comment is created, actions is launched.
+
+---
+
+```yaml {2}
+steps:
+  - uses: actions/checkout@v3
+```
+
+Check out the repository to the ubuntu environment.
+This will give `gpt-translate` access to the files in the repository for translation.
+
+In other words, you must always check out the repository in advance.
+
+---
+
+```yaml {2-4}
+- name: Run GPT Translate
+  if: |
+    contains(github.event.comment.body, '/gpt-translate') ||
+    contains(github.event.comment.body, '/gt')
+  uses: 3ru/gpt-translate@v1.1
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+```
+
+Specifies the conditions under which `gpt-translate` is executed.
+
+Here, if `/gpt-translate` or `/gt` is included in the comment, it moves to the next process.
+
+---
+
+```yaml {5}
+- name: Run GPT Translate
+  if: |
+    contains(github.event.comment.body, '/gpt-translate') ||
+    contains(github.event.comment.body, '/gt')
+  uses: 3ru/gpt-translate@v1.1
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+```
+
+Run with `v1.1` `gpt-translate` action.
+
+Instead of specifying a specific version, you can specify a major version `@1` or a branch `@master`.
+[GitHub Docs: Using a public action](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-a-public-action)
+
+---
+
+```yaml
+with:
+  apikey: ${{ secrets.OPENAI_API_KEY }}
+```
+
+Pass the OpenAI API Key from the repository secret (encrypted)

@@ -1,0 +1,127 @@
+---
+title: Command Reference
+description: Translate files on a command basis, specifying the file and target language
+---
+
+import { Callout, FileTree, Steps, Tabs, Tab } from 'nextra/components'
+import { WrenchIcon } from '@heroicons/react/24/outline'
+import { BeforeAfter } from '../../../components/BeforeAfter'
+import { Card } from '../../../components/Card'
+
+# Command Reference
+
+## Format
+
+```shell
+/gpt-translate [input filepath] [output filepath] [target language]
+```
+
+<Steps>
+
+### Comment
+
+Create a comment with `/gpt-translate` or `/gt` in an issue or pull request.
+
+<Callout type='info'>
+  You can use `/gt` as a shorthand for `/gpt-translate`.
+</Callout>
+
+### PR will be created
+
+<Tabs items={['On Issue', 'On Pull Request']}>
+  <Tab>
+    Translated files will be created as a **pull request**. ![command on
+    issue](https://i.gyazo.com/7e2c80bc12c46e137aed91e825ca4100.png)
+  </Tab>
+  <Tab>
+    Translated files will be **added to the pull request with new
+    commit**.![command on
+    PR](https://i.gyazo.com/804e24e8596224f062f3193d26bc811c.png)
+  </Tab>
+</Tabs>
+
+</Steps>
+
+In other words, if you keep commenting on an issue, new PRs will continuously be created.
+If you keep commenting on a PR, new commits will continuously be added to that PR.
+
+<Card
+  icon={<WrenchIcon />}
+  title='Related: Path Builder'
+  href='/docs/guide/built-ins/callout'
+/>
+
+## Examples
+
+### Single File
+
+```bash
+/gpt-translate ./README.md ./JA/README.md Japanese
+```
+
+The following directory structure changes are expected when this command is executed.
+
+<BeforeAfter
+  before={
+    <FileTree>
+      <FileTree.File name='README.md' />
+    </FileTree>
+  }
+  after={
+    <FileTree>
+      <FileTree.File name='README.md' />
+      <FileTree.Folder name='JA' defaultOpen>
+        <FileTree.File name='README.md' active />
+      </FileTree.Folder>
+    </FileTree>
+  }
+/>
+
+`README.md` in the root is newly translated into `Japanese` as `README.md` under the `JA directory`.
+
+### Multiple Files
+
+<Callout type='warning'>
+  This is currently under development. It is **not yet possible to specify all
+  nested files** under a directory.
+</Callout>
+
+```bash
+/gpt-translate ./EN/*.md ./JA/*.md Japanese
+```
+
+The following directory structure changes are expected when this command is executed.
+
+<BeforeAfter
+  before={
+    <FileTree>
+      <FileTree.File name='README.md' />
+      <FileTree.Folder name='EN' defaultOpen>
+        <FileTree.File name='getting-started.md' />
+        <FileTree.File name='setup.md' />
+        <FileTree.File name='hoge.webp' />
+      </FileTree.Folder>
+    </FileTree>
+  }
+  after={
+    <FileTree>
+      <FileTree.File name='README.md' />
+      <FileTree.Folder name='EN' defaultOpen>
+        <FileTree.File name='getting-started.md' />
+        <FileTree.File name='setup.md' />
+        <FileTree.File name='hoge.webp' />
+      </FileTree.Folder>
+      <FileTree.Folder name='JA' defaultOpen>
+        <FileTree.File name='getting-started.md' active />
+        <FileTree.File name='setup.md' active />
+      </FileTree.Folder>
+    </FileTree>
+  }
+/>
+
+All markdown files under the `EN directory` will be translated and output under the new `JA directory`.
+
+#### Tips
+
+GitHub comments support markdown notation, so if you use an asterisk(\*), it will be converted to _italic type_.
+This will still recognize the command normally, but it is recommended to enclose the command in `codespan` (\`).

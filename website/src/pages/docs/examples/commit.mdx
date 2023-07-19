@@ -1,0 +1,123 @@
+---
+title: Commit Based
+description: Example of translation execution per commit
+---
+
+import { BookOpenIcon } from '@heroicons/react/24/outline'
+import { Card } from '../../../components/Card'
+
+# Commit Based
+
+Every time there is a commit on a particular branch, translate it.
+
+## Workflow Settings Overview
+
+```yaml filename="gpt-translate-commit.yml"
+name: GPT Translate per Commit
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  gpt_translate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository with two latest commits
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: get changed files name
+        id: changed_files
+        run: |
+          echo "files=$(git diff --name-only HEAD^ HEAD | grep '\.md$' | tr '\n' ' ')" >> $GITHUB_OUTPUT
+
+      - name: Run GPT Translate
+        uses: 3ru/gpt-translate@v1.1.2
+        with:
+          apikey: ${{ secrets.OPENAI_API_KEY }}
+          inputFiles: ${{ steps.changed_files.outputs.files }}
+          outputFiles: 'JA/**/*.md FR/**/*.md'
+          languages: 'Japanese French'
+```
+
+## Explanation
+
+```yaml {2-4}
+on:
+  push:
+    branches:
+      - main
+```
+
+It is invoked whenever there is a commit on the `main` branch.
+
+---
+
+```yaml {3-5}
+steps:
+  - name: Checkout repository with two latest commits
+    uses: actions/checkout@v3
+    with:
+      fetch-depth: 2
+```
+
+Check out the two most recent commits (HEAD and the one before it).
+
+By comparing the latest commit with the one before it, we can get the diff files.
+
+---
+
+```yaml {2-4}
+- name: get changed files name
+  id: changed_files
+  run: |
+    echo "files=$(git diff --name-only HEAD^ HEAD | grep '\.md$' | tr '\n' ' ')" >> $GITHUB_OUTPUT
+```
+
+- `id: changed_files`
+  - Set id (`changed_files`) to refer to it from other steps.
+- `git diff --name-only HEAD^ HEAD | grep '\.md$'`
+  - Only markdown files are extracted from the diff files by the command in `run`.
+- `tr '\n' ' '`
+  - The files are then converted to a space-delimited format.
+- `>> $GITHUB_OUTPUT`
+  - Setting output parameters.
+
+---
+
+```yaml {5-7}
+- name: Run GPT Translate
+  uses: 3ru/gpt-translate@v1.1.2
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+    inputFiles: ${{ steps.changed_files.outputs.files }}
+    outputFiles: 'JA/**/*.md FR/**/*.md'
+    languages: 'Japanese French'
+```
+
+- `inputFiles`
+  - Pass the file path value for the file to be translated that was output in the previous step.
+- `outputFiles`
+  - Specify two directories, `JA` and `FR`, as output destinations.
+- `languages`
+  - Specify translation into `Japanese` and `French`.
+    It is important that the order matches the order of the `outputFiles`.
+
+---
+
+### Related
+
+<Card
+  icon={<BookOpenIcon />}
+  title='Action Inputs Reference'
+  href='/docs/references/input'
+/>
+
+<Card
+  icon={<BookOpenIcon />}
+  title='Path Specification'
+  href='/docs/references/path-builder'
+/>

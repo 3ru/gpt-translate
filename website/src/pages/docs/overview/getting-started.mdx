@@ -1,0 +1,49 @@
+---
+title: Documentation
+description: The universal design system solution for the web
+---
+
+import { Callout } from 'nextra/components'
+import {
+  KeyIcon,
+  Cog6ToothIcon,
+  PlusCircleIcon,
+} from '@heroicons/react/24/outline'
+import { Steps } from 'nextra/components'
+import { Card } from '../../../components/Card'
+
+<Callout type='info'>
+  This documentation site is currently **under construction** and has some
+  missing parts. If the information you want is missing, please feel free to
+  report it in
+  [Issues](https://github.com/3ru/gpt-translate/issues?q=is%3Aissue+is%3Aopen).
+</Callout>
+
+GPT-Translate is an automated document translation action (workflow) that can be used with GitHub Actions.
+
+## Installation
+
+<Steps>
+###
+<Card
+  icon={<KeyIcon />}
+  title='Prepare OpenAI API Key'
+  href='/docs/installation/openai-key'
+/>
+
+###
+
+<Card
+  icon={<Cog6ToothIcon />}
+  title='Repository Settings'
+  href='/docs/installation/repository-settings'
+/>
+
+###
+
+<Card
+  icon={<PlusCircleIcon />}
+  title='Create GitHub Actions Workflow'
+  href='/docs/installation/create-workflow'
+/>
+</Steps>
