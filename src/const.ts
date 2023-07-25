@@ -5,4 +5,4 @@ export const COMMAND_USAGE = `usage:
 `
 
 // File extensions for translation
-export const availableFileTypes = ['.md']
+export const availableFileTypes = ['.md', '.mdx']

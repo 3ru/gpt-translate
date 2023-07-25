@@ -49,11 +49,12 @@ export const askGPT = async (text: string, prompt: string): Promise<string> => {
 export const gptTranslate = async (
   text: string,
   targetLanguage: string,
+  targetFileExt: string, // filename extension. Must be within availableFileTypes.
   maxToken = 16000,
   splitter = `\n\n`,
 ): Promise<string> => {
   // TODO: Improve prompt (trusting user input currently)
-  const prompt = `Please translate the given text into ${targetLanguage} and output it in markdown format.`
+  const prompt = `Please translate the given text into ${targetLanguage} and output it in ${targetFileExt} format.`
 
   let translated = ''
   let chunk = ''

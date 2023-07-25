@@ -110,7 +110,8 @@ export const createTranslatedFiles = async (
 ) => {
   const processFiles = inputFilePaths.map(async (inputFile, i) => {
     const content = await fs.readFile(inputFile, 'utf-8')
-    const translated = await gptTranslate(content, targetLang)
+    const ext = path.extname(inputFile)
+    const translated = await gptTranslate(content, targetLang, ext)
 
     // Check if the translation is same as the original
     if (await isFileExists(outputFilePaths[i])) {
