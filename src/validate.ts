@@ -1,11 +1,12 @@
-import { availableFileTypes, COMMAND_USAGE } from './const'
+import { availableFileExtensions } from './const'
 import path from 'path'
 import { postError, removeSymbols } from './utils'
+import { COMMAND_USAGE, INVALID_FILE_EXTENSION } from './error'
 
-export const isValidFileType = (filename: string): boolean => {
+export const isValidFileExt = (filename: string): boolean => {
   // Allow input file extension inheritance by asterisk in addition to normal file formats
-  const fileTypes = [...availableFileTypes, '*']
-  return fileTypes.some((type) => filename.endsWith(type))
+  const fileExts = [...availableFileExtensions, '*']
+  return fileExts.some((type) => filename.endsWith(type))
 }
 
 export const commandValidator = async (
@@ -22,14 +23,8 @@ export const commandValidator = async (
 
   const [, inputFilePath, outputFilePath, targetLang] = match!
 
-  // const isValidFileType = (filename: string) =>
-  //   availableFileTypes.some((type) => filename.endsWith(type))
-
-  if (!isValidFileType(inputFilePath) || !isValidFileType(outputFilePath)) {
-    const availableFileTypesString = availableFileTypes.join(', ')
-    await postError(
-      `Error: File must be a valid file type.\n${availableFileTypesString}`,
-    )
+  if (!isValidFileExt(inputFilePath) || !isValidFileExt(outputFilePath)) {
+    await postError(INVALID_FILE_EXTENSION)
   }
 
   const inputFileName = path.basename(inputFilePath)

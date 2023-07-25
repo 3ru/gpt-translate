@@ -1,6 +1,6 @@
 import { getInput, setFailed } from '@actions/core'
 import { context } from '@actions/github'
-import { commandValidator, isValidFileType } from './validate'
+import { commandValidator, isValidFileExt } from './validate'
 
 type CommandParams = {
   inputFilePath: string
@@ -39,8 +39,8 @@ export const extractInput = (): ManualParams => {
 
   // validate input
   const isValidInput =
-    inputFiles.every((v) => isValidFileType(v)) &&
-    outputFiles.every((v) => isValidFileType(v))
+    inputFiles.every((v) => isValidFileExt(v)) &&
+    outputFiles.every((v) => isValidFileExt(v))
 
   if (!isValidInput) {
     throw new Error(
