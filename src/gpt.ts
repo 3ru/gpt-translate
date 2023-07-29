@@ -7,11 +7,15 @@ import {
 import { encode } from 'gpt-3-encoder'
 
 const API_KEY = getInput('apikey')
+const BASE_PATH = getInput('basePath') || 'https://api.openai.com/v1'
 if (!API_KEY) {
   setFailed('Error: API_KEY could not be retrieved.')
 }
 
-const configuration = new Configuration({ apiKey: API_KEY })
+const configuration = new Configuration({
+  apiKey: API_KEY,
+  basePath: BASE_PATH,
+})
 const openAIApi = new OpenAIApi(configuration)
 
 export const askGPT = async (text: string, prompt: string): Promise<string> => {

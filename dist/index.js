@@ -18356,10 +18356,14 @@ const core_1 = __nccwpck_require__(5091);
 const openai_1 = __nccwpck_require__(6761);
 const gpt_3_encoder_1 = __nccwpck_require__(7706);
 const API_KEY = (0, core_1.getInput)('apikey');
+const BASE_PATH = (0, core_1.getInput)('basePath') || 'https://api.openai.com/v1';
 if (!API_KEY) {
     (0, core_1.setFailed)('Error: API_KEY could not be retrieved.');
 }
-const configuration = new openai_1.Configuration({ apiKey: API_KEY });
+const configuration = new openai_1.Configuration({
+    apiKey: API_KEY,
+    basePath: BASE_PATH,
+});
 const openAIApi = new openai_1.OpenAIApi(configuration);
 const askGPT = async (text, prompt) => {
     const { data: { choices: [{ message: { content: content } = { content: '' } }], }, } = await openAIApi
