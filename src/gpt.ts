@@ -8,6 +8,9 @@ import { encode } from 'gpt-3-encoder'
 
 const API_KEY = getInput('apikey')
 const BASE_PATH = getInput('basePath') || 'https://api.openai.com/v1'
+const PROMPT =
+  getInput('prompt') ||
+  'Please translate the given text into naturalistic {targetLanguage}.'
 if (!API_KEY) {
   setFailed('Error: API_KEY could not be retrieved.')
 }
@@ -57,8 +60,10 @@ export const gptTranslate = async (
   maxToken = 16000,
   splitter = `\n\n`,
 ): Promise<string> => {
-  // TODO: Improve prompt (trusting user input currently)
-  const prompt = `Please translate the given text into ${targetLanguage} and output it in ${targetFileExt} format.`
+  const prompt = PROMPT.replaceAll(
+    '{targetLanguage}',
+    targetLanguage,
+  ).replaceAll('{targetFileExt}', targetFileExt)
 
   let translated = ''
   let chunk = ''

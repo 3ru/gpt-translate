@@ -18096,8 +18096,7 @@ const core_1 = __nccwpck_require__(5091);
 const github_1 = __nccwpck_require__(603);
 const validate_1 = __nccwpck_require__(6469);
 const getCommandParams = async () => {
-    var _a;
-    const comment = (_a = github_1.context.payload.comment) === null || _a === void 0 ? void 0 : _a.body;
+    const comment = github_1.context.payload.comment?.body;
     if (!comment)
         (0, core_1.setFailed)('Error: Comment could not be retrieved correctly.');
     const regex = /\/(?:gpt-translate|gt)\s+(\S+)\s+(\S+)\s+(\S+)/;
@@ -18357,6 +18356,8 @@ const openai_1 = __nccwpck_require__(6761);
 const gpt_3_encoder_1 = __nccwpck_require__(7706);
 const API_KEY = (0, core_1.getInput)('apikey');
 const BASE_PATH = (0, core_1.getInput)('basePath') || 'https://api.openai.com/v1';
+const PROMPT = (0, core_1.getInput)('prompt') ||
+    'Please translate the given text into naturalistic {targetLanguage}.';
 if (!API_KEY) {
     (0, core_1.setFailed)('Error: API_KEY could not be retrieved.');
 }
@@ -18391,8 +18392,7 @@ const askGPT = async (text, prompt) => {
 exports.askGPT = askGPT;
 const gptTranslate = async (text, targetLanguage, targetFileExt, // filename extension. Must be within availableFileExtensions.
 maxToken = 16000, splitter = `\n\n`) => {
-    // TODO: Improve prompt (trusting user input currently)
-    const prompt = `Please translate the given text into ${targetLanguage} and output it in ${targetFileExt} format.`;
+    const prompt = PROMPT.replaceAll('{targetLanguage}', targetLanguage).replaceAll('{targetFileExt}', targetFileExt);
     let translated = '';
     let chunk = '';
     (0, core_1.info)('Start translating...');
@@ -18523,9 +18523,8 @@ const postError = async (message) => {
 };
 exports.postError = postError;
 const isPR = () => {
-    var _a;
     const { payload } = github_1.context;
-    return !!((_a = payload.issue) === null || _a === void 0 ? void 0 : _a.pull_request);
+    return !!payload.issue?.pull_request;
 };
 exports.isPR = isPR;
 const removeSymbols = (input) => {
