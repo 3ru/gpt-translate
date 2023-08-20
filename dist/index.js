@@ -18356,6 +18356,7 @@ const openai_1 = __nccwpck_require__(6761);
 const gpt_3_encoder_1 = __nccwpck_require__(7706);
 const API_KEY = (0, core_1.getInput)('apikey');
 const BASE_PATH = (0, core_1.getInput)('basePath') || 'https://api.openai.com/v1';
+const MODEL = (0, core_1.getInput)('model') || 'gpt-3.5-turbo-16k';
 const PROMPT = (0, core_1.getInput)('prompt') ||
     'Please translate the given text into naturalistic {targetLanguage}.';
 if (!API_KEY) {
@@ -18369,7 +18370,7 @@ const openAIApi = new openai_1.OpenAIApi(configuration);
 const askGPT = async (text, prompt) => {
     const { data: { choices: [{ message: { content: content } = { content: '' } }], }, } = await openAIApi
         .createChatCompletion({
-        model: 'gpt-3.5-turbo-16k',
+        model: MODEL,
         messages: [
             {
                 role: openai_1.ChatCompletionRequestMessageRoleEnum.System,
@@ -18381,7 +18382,11 @@ const askGPT = async (text, prompt) => {
     })
         .catch((err) => {
         (0, core_1.error)(err);
-        (0, core_1.notice)('If the status code is 400, the file exceeds 16,000 tokens without line breaks. \nPlease open one line as appropriate.');
+        const notifications = [
+            'If the status code is 400, the file exceeds 16,000 tokens without line breaks. \nPlease open one line as appropriate.',
+            'If the status code is 404, you do not have right access to the model.',
+        ];
+        notifications.forEach((msg) => (0, core_1.notice)(msg));
         process.exit(1);
     });
     if (content === '') {
@@ -18391,11 +18396,12 @@ const askGPT = async (text, prompt) => {
 };
 exports.askGPT = askGPT;
 const gptTranslate = async (text, targetLanguage, targetFileExt, // filename extension. Must be within availableFileExtensions.
-maxToken = 16000, splitter = `\n\n`) => {
+splitter = `\n\n`) => {
+    const maxToken = (MODEL.includes('32k') ? 32768 : 8192) / 2;
     const prompt = PROMPT.replaceAll('{targetLanguage}', targetLanguage).replaceAll('{targetFileExt}', targetFileExt);
     let translated = '';
     let chunk = '';
-    (0, core_1.info)('Start translating...');
+    (0, core_1.info)(`Start translating with ${MODEL}...`);
     const contentChunks = text.split(splitter);
     for (let i = 0; i < contentChunks.length; i++) {
         if ((0, gpt_3_encoder_1.encode)(chunk + contentChunks[i]).length > maxToken) {

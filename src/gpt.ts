@@ -8,6 +8,7 @@ import { encode } from 'gpt-3-encoder'
 
 const API_KEY = getInput('apikey')
 const BASE_PATH = getInput('basePath') || 'https://api.openai.com/v1'
+const MODEL = getInput('model') || 'gpt-3.5-turbo-16k'
 const PROMPT =
   getInput('prompt') ||
   'Please translate the given text into naturalistic {targetLanguage}.'
@@ -28,7 +29,7 @@ export const askGPT = async (text: string, prompt: string): Promise<string> => {
     },
   } = await openAIApi
     .createChatCompletion({
-      model: 'gpt-3.5-turbo-16k',
+      model: MODEL,
       messages: [
         {
           role: ChatCompletionRequestMessageRoleEnum.System,
@@ -40,9 +41,13 @@ export const askGPT = async (text: string, prompt: string): Promise<string> => {
     })
     .catch((err) => {
       error(err)
-      notice(
+
+      const notifications = [
         'If the status code is 400, the file exceeds 16,000 tokens without line breaks. \nPlease open one line as appropriate.',
-      )
+        'If the status code is 404, you do not have right access to the model.',
+      ]
+      notifications.forEach((msg) => notice(msg))
+
       process.exit(1)
     })
 
@@ -57,9 +62,9 @@ export const gptTranslate = async (
   text: string,
   targetLanguage: string,
   targetFileExt: string, // filename extension. Must be within availableFileExtensions.
-  maxToken = 16000,
   splitter = `\n\n`,
 ): Promise<string> => {
+  const maxToken = (MODEL.includes('32k') ? 32768 : 8192) / 2
   const prompt = PROMPT.replaceAll(
     '{targetLanguage}',
     targetLanguage,
@@ -68,7 +73,7 @@ export const gptTranslate = async (
   let translated = ''
   let chunk = ''
 
-  info('Start translating...')
+  info(`Start translating with ${MODEL}...`)
   const contentChunks = text.split(splitter)
   for (let i = 0; i < contentChunks.length; i++) {
     if (encode(chunk + contentChunks[i]).length > maxToken) {
