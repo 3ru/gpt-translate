@@ -43,7 +43,7 @@ export const askGPT = async (text: string, prompt: string): Promise<string> => {
       error(err)
 
       const notifications = [
-        'If the status code is 400, the file exceeds 16,000 tokens without line breaks. \nPlease open one line as appropriate.',
+        'If the status code is 400, the file exceeds token limit without line breaks. \nPlease open one line as appropriate.',
         'If the status code is 404, you do not have right access to the model.',
       ]
       notifications.forEach((msg) => notice(msg))
@@ -64,7 +64,8 @@ export const gptTranslate = async (
   targetFileExt: string, // filename extension. Must be within availableFileExtensions.
   splitter = `\n\n`,
 ): Promise<string> => {
-  const maxToken = (MODEL.includes('32k') ? 32768 : 8192) / 2
+  const maxToken =
+    (MODEL.includes('32k') ? 32768 : MODEL.includes('16k') ? 16384 : 4096) / 2
   const prompt = PROMPT.replaceAll(
     '{targetLanguage}',
     targetLanguage,

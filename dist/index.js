@@ -18383,7 +18383,7 @@ const askGPT = async (text, prompt) => {
         .catch((err) => {
         (0, core_1.error)(err);
         const notifications = [
-            'If the status code is 400, the file exceeds 16,000 tokens without line breaks. \nPlease open one line as appropriate.',
+            'If the status code is 400, the file exceeds token limit without line breaks. \nPlease open one line as appropriate.',
             'If the status code is 404, you do not have right access to the model.',
         ];
         notifications.forEach((msg) => (0, core_1.notice)(msg));
@@ -18397,7 +18397,7 @@ const askGPT = async (text, prompt) => {
 exports.askGPT = askGPT;
 const gptTranslate = async (text, targetLanguage, targetFileExt, // filename extension. Must be within availableFileExtensions.
 splitter = `\n\n`) => {
-    const maxToken = (MODEL.includes('32k') ? 32768 : 8192) / 2;
+    const maxToken = (MODEL.includes('32k') ? 32768 : MODEL.includes('16k') ? 16384 : 4096) / 2;
     const prompt = PROMPT.replaceAll('{targetLanguage}', targetLanguage).replaceAll('{targetFileExt}', targetFileExt);
     let translated = '';
     let chunk = '';
@@ -18475,8 +18475,12 @@ const translateByManual = async (inputFiles, outputFiles, languages) => {
     const outputFilePaths = outputFiles.map((outputFile) => {
         return (0, file_1.generateOutputFilePaths)(inputFiles, outputFile);
     });
-    // TODO: Dealing with request limits (503 error)
-    await Promise.all(languages.map((language, index) => (0, exports.createTranslatedFiles)(inputFiles, outputFilePaths[index], language)));
+    // 0/5 second delay to avoid rate limiting.
+    // TODO: Provide an essential solution in the future.
+    await Promise.all(languages.map(async (language, index) => {
+        await (0, utils_1.delay)(index * 0.5);
+        return (0, exports.createTranslatedFiles)(inputFiles, outputFilePaths[index], language);
+    }));
     await (0, git_1.gitSetConfig)();
     const branch = await (0, git_1.gitCreateBranch)();
     const title = '🌐 Add LLM Translations';
@@ -18518,7 +18522,7 @@ exports.createTranslatedFiles = createTranslatedFiles;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.generatePRBody = exports.removeSymbols = exports.isPR = exports.postError = void 0;
+exports.generatePRBody = exports.delay = exports.removeSymbols = exports.isPR = exports.postError = void 0;
 const core_1 = __nccwpck_require__(5091);
 const git_1 = __nccwpck_require__(5939);
 const github_1 = __nccwpck_require__(603);
@@ -18537,6 +18541,8 @@ const removeSymbols = (input) => {
     return input.replace(/[^\w\s]/gi, '');
 };
 exports.removeSymbols = removeSymbols;
+const delay = (s) => new Promise((resolve) => setTimeout(resolve, 1000 * s));
+exports.delay = delay;
 const generatePRBody = (inputFilePaths, outputFilePaths, targetLang, issueNumber) => {
     const generateRow = (label, filePaths) => {
         let result = [];

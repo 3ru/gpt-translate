@@ -1,7 +1,7 @@
 import fs from 'fs/promises'
 import path from 'path'
 import { gptTranslate } from './gpt'
-import { generatePRBody, isPR } from './utils'
+import { delay, generatePRBody, isPR } from './utils'
 import {
   gitCheckout,
   gitCommitPush,
@@ -84,11 +84,13 @@ export const translateByManual = async (
     return generateOutputFilePaths(inputFiles, outputFile)
   })
 
-  // TODO: Dealing with request limits (503 error)
+  // 0/5 second delay to avoid rate limiting.
+  // TODO: Provide an essential solution in the future.
   await Promise.all(
-    languages.map((language, index) =>
-      createTranslatedFiles(inputFiles, outputFilePaths[index], language),
-    ),
+    languages.map(async (language, index) => {
+      await delay(index * 0.5)
+      return createTranslatedFiles(inputFiles, outputFilePaths[index], language)
+    }),
   )
 
   await gitSetConfig()

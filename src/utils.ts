@@ -17,6 +17,9 @@ export const removeSymbols = (input: string): string => {
   return input.replace(/[^\w\s]/gi, '')
 }
 
+export const delay = (s: number) =>
+  new Promise((resolve) => setTimeout(resolve, 1000 * s))
+
 export const generatePRBody = (
   inputFilePaths: string[],
   outputFilePaths: string[] | string[][],
