@@ -7,6 +7,21 @@ inputs:
   apikey:
     description: 'OpenAI API Key'
     required: true
+  model:
+    description: 'OpenAI Model'
+    required: false
+  basePath:
+    description: 'Replace the base path of openai api'
+    required: false
+  inputFiles:
+    description: 'Input files to translate'
+    required: false
+  outputFiles:
+    description: 'Output files to save'
+    required: false
+  languages:
+    description: 'Language to translate to'
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'
