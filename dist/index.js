@@ -18475,10 +18475,8 @@ const translateByManual = async (inputFiles, outputFiles, languages) => {
     const outputFilePaths = outputFiles.map((outputFile) => {
         return (0, file_1.generateOutputFilePaths)(inputFiles, outputFile);
     });
-    // 0/5 second delay to avoid rate limiting.
-    // TODO: Provide an essential solution in the future.
+    // TODO: Dealing with token limit
     await Promise.all(languages.map(async (language, index) => {
-        await (0, utils_1.delay)(index * 0.5);
         return (0, exports.createTranslatedFiles)(inputFiles, outputFilePaths[index], language);
     }));
     await (0, git_1.gitSetConfig)();
