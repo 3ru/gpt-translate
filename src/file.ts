@@ -58,30 +58,6 @@ function extractFileExtension(filename: string): string | null {
   return match ? match[0] : null
 }
 
-/*
- * Get all file paths in a directory with a specific extension.
- * @param directoryPath The path to the directory to search.
- * @param extension The extension to filter by.
- */
-export const getFilePathsWithExtension = async (
-  directoryPath: string,
-  extension: string,
-): Promise<string[]> => {
-  const files = await fs.readdir(directoryPath)
-
-  const filteredFiles: string[] = []
-  for (const file of files) {
-    const filePath = path.join(directoryPath, file)
-    const stat = await fs.stat(filePath)
-
-    if (stat.isFile() && path.extname(file) === extension) {
-      filteredFiles.push(filePath)
-    }
-  }
-
-  return filteredFiles
-}
-
 /**
  * Generates an array of output file paths based on the provided array of input file paths
  *
