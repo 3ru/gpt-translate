@@ -1,6 +1,6 @@
 import { postError } from './utils'
 import { translateByCommand, translateByManual } from './translate'
-import { authorizeUser } from './git'
+import { authorizeUser, gitAddCommentReaction } from './git'
 import { extractInput, getCommandParams } from './extract'
 import { context } from '@actions/github'
 import { setFailed } from '@actions/core'
@@ -12,6 +12,7 @@ async function main() {
       if (!isAuthorized) {
         await postError('You have no permission to use this bot.')
       }
+      await gitAddCommentReaction('eyes')
       const { inputFilePath, outputFilePath, targetLang } =
         await getCommandParams()
       await translateByCommand(inputFilePath, outputFilePath, targetLang)
