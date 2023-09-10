@@ -1,4 +1,5 @@
 export default {
+  titleSuffix: ' – GT',
   docsRepositoryBase:
     'https://github.com/3ru/gpt-translate/tree/master/website',
   logo: (
@@ -16,7 +17,7 @@ export default {
     text: (
       <span>
         MIT {new Date().getFullYear()} ©{' '}
-        <a href="https://github.com/3ru" target="_blank">
+        <a href='https://github.com/3ru' target='_blank'>
           Ryuya
         </a>
         .
