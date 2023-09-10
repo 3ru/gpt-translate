@@ -102,6 +102,32 @@ export const gitPostComment = async (message: string) => {
   })
 }
 
+type Reaction =
+  | '+1'
+  | '-1'
+  | 'laugh'
+  | 'confused'
+  | 'heart'
+  | 'hooray'
+  | 'rocket'
+  | 'eyes'
+export const gitAddCommentReaction = async (reaction: Reaction) => {
+  const {
+    rest: { reactions },
+  } = getOctokit(GITHUB_TOKEN)
+
+  const commentId = context.payload.comment?.id
+  if (!commentId) {
+    throw new Error('Comment ID is not found.')
+  }
+
+  await reactions.createForIssueComment({
+    ...context.repo,
+    comment_id: commentId,
+    content: reaction,
+  })
+}
+
 export const authorizeUser = async () => {
   const {
     rest: { repos },

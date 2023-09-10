@@ -1,5 +1,8 @@
 import fs from 'fs/promises'
 import path from 'path'
+import { glob } from 'glob'
+import { context } from '@actions/github'
+import { info } from '@actions/core'
 import { gptTranslate } from './gpt'
 import { generatePRBody, isPR } from './utils'
 import {
@@ -10,14 +13,7 @@ import {
   gitPostComment,
   gitSetConfig,
 } from './git'
-import { context } from '@actions/github'
-import {
-  createFile,
-  generateOutputFilePaths,
-  getFilePathsWithExtension,
-  isFileExists,
-} from './file'
-import { info } from '@actions/core'
+import { createFile, generateOutputFilePaths, isFileExists } from './file'
 
 export const translateByCommand = async (
   inputFilePath: string,
@@ -27,18 +23,15 @@ export const translateByCommand = async (
   await gitSetConfig()
   const branch = isPR() ? await gitCheckout() : await gitCreateBranch()
 
-  const isMultipleFileSelected = path.basename(inputFilePath).includes('*')
+  const inputFilePaths = await glob(inputFilePath)
+  if (inputFilePaths.length === 0) {
+    throw new Error('No input files found.')
+  }
 
-  const inputFilePaths = isMultipleFileSelected
-    ? await getFilePathsWithExtension(
-        path.dirname(inputFilePath),
-        path.extname(inputFilePath),
-      )
-    : [inputFilePath]
-
-  const outputFilePaths = isMultipleFileSelected
-    ? generateOutputFilePaths(inputFilePaths, outputFilePath)
-    : [outputFilePath]
+  const outputFilePaths = generateOutputFilePaths(
+    inputFilePaths,
+    outputFilePath,
+  )
 
   await createTranslatedFiles(inputFilePaths, outputFilePaths, targetLang)
 

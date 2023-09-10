@@ -74,7 +74,7 @@ export const gptTranslate = async (
   let translated = ''
   let chunk = ''
 
-  info(`Start translating with ${MODEL}...`)
+  info(`${new Date().toLocaleString()} Start translating with ${MODEL}...`)
   const contentChunks = text.split(splitter)
   for (let i = 0; i < contentChunks.length; i++) {
     if (encode(chunk + contentChunks[i]).length > maxToken) {
