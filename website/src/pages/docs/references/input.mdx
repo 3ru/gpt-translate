@@ -10,12 +10,16 @@ import { Card } from '../../../components/Card'
 
 Required fields are asterisked.
 
-| Name          | Description       | type                     |
-| ------------- | ----------------- | ------------------------ |
-| `apikey`\*    | OpenAI API Key    | `secrets`                |
-| `inputFiles`  | target file paths | `space-delimited string` |
-| `outputFiles` | output paths      | `space-delimited string` |
-| `languages`   | target language   | `space-delimited string` |
+| Name          | Description                                                               | type                     |
+| ------------- | ------------------------------------------------------------------------- | ------------------------ |
+| `apikey`\*    | OpenAI API Key                                                            | `secrets`                |
+| `inputFiles`  | target file paths                                                         | `space-delimited string` |
+| `outputFiles` | output paths                                                              | `space-delimited string` |
+| `languages`   | target language                                                           | `space-delimited string` |
+| `model`       | [OpenAI language model](https://platform.openai.com/docs/models/overview) | `string`                 |
+| `basePath`    | base path of openai api                                                   | `string`                 |
+
+The model specified by default is `gpt-3.5-turbo-16k`.
 
 ---
 
