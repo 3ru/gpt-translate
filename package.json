@@ -16,6 +16,7 @@
     "@actions/core": "^1.10.0",
     "@actions/exec": "^1.1.1",
     "@actions/github": "^5.1.1",
+    "glob": "^10.3.4",
     "gpt-3-encoder": "^1.1.4",
     "openai": "^3.2.1"
   },
