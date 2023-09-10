@@ -1,9 +1,9 @@
+import { context } from '@actions/github'
+import { setFailed } from '@actions/core'
 import { postError } from './utils'
 import { translateByCommand, translateByManual } from './translate'
 import { authorizeUser, gitAddCommentReaction } from './git'
 import { extractInput, getCommandParams } from './extract'
-import { context } from '@actions/github'
-import { setFailed } from '@actions/core'
 
 async function main() {
   switch (context.eventName) {
