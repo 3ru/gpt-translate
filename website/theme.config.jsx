@@ -42,4 +42,8 @@ export default {
       titleTemplate: '%s – GPT-Translate',
     }
   },
+  i18n: [
+    { locale: 'en', text: 'English' },
+    // { locale: 'ja', text: '日本語' },
+  ],
 }
