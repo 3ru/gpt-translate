@@ -44,10 +44,9 @@ If you have a better notation idea, please feel free to suggest it in [issues](h
 
 ### Multiple nested file specification
 
-<Callout type='warning'>
-  Unstable due to under development. Currently, the command cannot specify
-  nested files in bulk, but only in [action input
-  format](/docs/references/input.mdx).
+<Callout type='info'>
+  We use the `node-glob` to identify input files. Please refer to the [node-glob
+  repository](https://github.com/isaacs/node-glob#readme) for more information.
 </Callout>
 
 <FileTree>
@@ -61,10 +60,8 @@ If you have a better notation idea, please feel free to suggest it in [issues](h
 </FileTree>
 
 - To specify `setup.md` and `bar.md`
-  - `EN/setup.md`, `EN/foo/bar.md`
-  - `./EN/setup.md`, `./EN/foo/bar.md`
-
-On command, it must be executed twice.
+  - `EN/**/*.md`
+  - `./EN/**/*.md`
 
 ## Wildcard output path specification
 
