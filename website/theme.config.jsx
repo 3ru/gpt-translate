@@ -1,5 +1,4 @@
 export default {
-  titleSuffix: ' – GT',
   docsRepositoryBase:
     'https://github.com/3ru/gpt-translate/tree/master/website',
   logo: (
