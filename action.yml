@@ -10,6 +10,9 @@ inputs:
   model:
     description: 'OpenAI Model'
     required: false
+  prompt:
+    description: 'Instructions to the model'
+    required: false
   basePath:
     description: 'Replace the base path of openai api'
     required: false
