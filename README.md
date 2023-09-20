@@ -69,7 +69,7 @@ jobs:
         if: |
           contains(github.event.comment.body, '/gpt-translate') || 
           contains(github.event.comment.body, '/gt')
-        uses: 3ru/gpt-translate@v1.1
+        uses: 3ru/gpt-translate@v1.1.6
         with:
           apikey: ${{ secrets.OPENAI_API_KEY }}
 ```
