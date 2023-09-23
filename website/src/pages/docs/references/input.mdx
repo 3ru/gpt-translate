@@ -17,9 +17,31 @@ Required fields are asterisked.
 | `outputFiles` | output paths                                                              | `space-delimited string` |
 | `languages`   | target language                                                           | `space-delimited string` |
 | `model`       | [OpenAI language model](https://platform.openai.com/docs/models/overview) | `string`                 |
+| `prompt`      | Instructions to the model                                                 | `string`                 |
 | `basePath`    | base path of openai api                                                   | `string`                 |
 
 The model specified by default is `gpt-3.5-turbo-16k`.
+
+## `prompt`
+
+With this configuration, you have the flexibility to define any prompt of your choice.
+
+```yaml
+with:
+  apikey: ${{ secrets.OPENAI_API_KEY }}
+  prompt: 'Please translate the given text into naturalistic {targetLanguage}.'
+```
+
+You can embed two dynamic variables using the `{}` brackets to make your prompts more specific:
+
+- `targetLanguage` Indicates the desired language for translation.
+- `targetFileExt` Specifies the desired file extension (e.g., `.md`).
+
+For instance, if you wish to prompt for a translation into a specific language and specify the output format, your configuration might look like this:
+
+```yaml
+prompt: 'Please translate the given text into naturalistic {targetLanguage} and output it in {targetFileExt} format.'
+```
 
 ---
 

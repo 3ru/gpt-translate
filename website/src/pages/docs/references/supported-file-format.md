@@ -7,7 +7,9 @@ Description: List of File Formats Available for Translation
 
 ### Markdown `.md`
 
-Long sentences, such as a novel with no line breaks at all, are difficult to split into separate translations and may cause errors. If your English text contains approximately 80,000 consecutive characters without line breaks, please review your text proofreading.
+<details><summary>Trick</summary><div>
+
+Long sentences, such as a novel with no line breaks at all, are difficult to split into separate translations and may cause errors. If your text contains approximately 80,000 consecutive characters (when using gpt-3.5) without line breaks, please review your text proofreading.
 
 #### Example
 
@@ -27,5 +29,14 @@ Once upon a time...
 Once upon a time...
 ```
 
-
 The number of tokens can be measured on the [official OpenAI tool](https://platform.openai.com/tokenizer).
+
+</div></details>
+
+### [MDX](https://mdxjs.com/) `.mdx`
+
+MDX allows you to use JSX in your markdown content.
+
+
+### Json `.json`
+
