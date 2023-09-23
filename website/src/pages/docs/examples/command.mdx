@@ -27,7 +27,7 @@ jobs:
         if: |
           contains(github.event.comment.body, '/gpt-translate') ||
           contains(github.event.comment.body, '/gt')
-        uses: 3ru/gpt-translate@v1.1
+        uses: 3ru/gpt-translate@master
         with:
           apikey: ${{ secrets.OPENAI_API_KEY }}
 ```
@@ -61,7 +61,7 @@ In other words, you must always check out the repository in advance.
   if: |
     contains(github.event.comment.body, '/gpt-translate') ||
     contains(github.event.comment.body, '/gt')
-  uses: 3ru/gpt-translate@v1.1
+  uses: 3ru/gpt-translate@master
   with:
     apikey: ${{ secrets.OPENAI_API_KEY }}
 ```
@@ -77,7 +77,7 @@ Here, if `/gpt-translate` or `/gt` is included in the comment, it moves to the n
   if: |
     contains(github.event.comment.body, '/gpt-translate') ||
     contains(github.event.comment.body, '/gt')
-  uses: 3ru/gpt-translate@v1.1
+  uses: 3ru/gpt-translate@master
   with:
     apikey: ${{ secrets.OPENAI_API_KEY }}
 ```
