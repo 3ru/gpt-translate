@@ -6,6 +6,8 @@ export const COMMAND_USAGE = `usage:
 \`\`\`
 `
 
-const availableFileExtsString = availableFileExtensions.join(', ')
+const availableFileExtsString = availableFileExtensions
+  .map((ext) => `\`${ext}\``)
+  .join(', ')
 
-export const INVALID_FILE_EXTENSION = `Error: File must be a valid file type.\n${availableFileExtsString}`
+export const INVALID_FILE_EXTENSION = `Unsupported file extension. Please use one of the following formats: ${availableFileExtsString}.`
