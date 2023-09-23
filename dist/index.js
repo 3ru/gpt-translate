@@ -18341,7 +18341,7 @@ function wrappy (fn, cb) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.availableFileExtensions = void 0;
 // File extensions for translation
-exports.availableFileExtensions = ['.md', '.mdx'];
+exports.availableFileExtensions = ['.md', '.mdx', '.json'];
 
 
 /***/ }),
@@ -18359,8 +18359,10 @@ exports.COMMAND_USAGE = `usage:
 /gpt-translate [input file path] [output file path] [target language]
 \`\`\`
 `;
-const availableFileExtsString = const_1.availableFileExtensions.join(', ');
-exports.INVALID_FILE_EXTENSION = `Error: File must be a valid file type.\n${availableFileExtsString}`;
+const availableFileExtsString = const_1.availableFileExtensions
+    .map((ext) => `\`${ext}\``)
+    .join(', ');
+exports.INVALID_FILE_EXTENSION = `Unsupported file extension. Please use one of the following formats: ${availableFileExtsString}.`;
 
 
 /***/ }),
