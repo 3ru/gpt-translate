@@ -18460,21 +18460,35 @@ exports.isFileExists = isFileExists;
 /**
  * Replace the part with '**' with the rest
  */
-function replaceWildcard(inputArray, outputArray) {
-    const output = [...outputArray];
+const replaceWildcardPath = (inputArray, outputArray) => {
     const indexOfAsteriskAsterisk = outputArray.indexOf('**');
-    if (indexOfAsteriskAsterisk !== -1) {
-        output.splice(indexOfAsteriskAsterisk, 1, ...inputArray.slice(indexOfAsteriskAsterisk));
-    }
-    return output;
-}
+    // Return copy with no references
+    if (indexOfAsteriskAsterisk === -1)
+        return [...outputArray];
+    return [
+        ...outputArray.slice(0, indexOfAsteriskAsterisk),
+        ...inputArray.slice(indexOfAsteriskAsterisk),
+    ];
+};
 /**
- * Extracts the extension from a filename string
+ * Replaces the wildcard '*' in the output filename with the corresponding segments from the input filename,
+ * while preserving any modifiers after the wildcard in the output filename.
  */
-function extractFileExtension(filename) {
-    const match = filename.match(/\.\w+(\.\w+)?$/);
-    return match ? match[0] : null;
-}
+const replaceWildcardFilename = (inputFilenameWithoutExt, outputFilenameWithoutExt) => {
+    if (!inputFilenameWithoutExt.includes('.')) {
+        return outputFilenameWithoutExt.replace('*', inputFilenameWithoutExt);
+    }
+    // Split filenames into segments based on '.'
+    const inputSegmentsReversed = inputFilenameWithoutExt.split('.').reverse();
+    const outputSegmentsReversed = outputFilenameWithoutExt.split('.').reverse();
+    const wildcardIndex = outputSegmentsReversed.indexOf('*');
+    // Construct the new filename by replacing the wildcard with the corresponding segments from the input filename
+    const mergedSegments = [
+        ...outputSegmentsReversed.slice(0, wildcardIndex),
+        ...inputSegmentsReversed.slice(wildcardIndex),
+    ];
+    return mergedSegments.reverse().join('.');
+};
 /**
  * Generates an array of output file paths based on the provided array of input file paths
  *
@@ -18485,28 +18499,31 @@ function extractFileExtension(filename) {
  *
  */
 const generateOutputFilePaths = (inputFilePaths, outputFilePath) => {
-    const outputSegments = outputFilePath.replace('./', '').split('/');
-    const outputFilePattern = outputSegments.pop();
-    const outputFileExt = extractFileExtension(outputFilePattern) || '';
-    const outputFilenameWithoutExt = outputFilePattern.replace(outputFileExt, '');
-    return inputFilePaths.map((inputFilePath) => {
-        const inputSegments = inputFilePath.split('/');
+    const outputSegments = path_1.default.normalize(outputFilePath).split(path_1.default.sep);
+    const outputFileName = outputSegments.pop();
+    const outputFilenameWithoutExt = path_1.default.basename(outputFileName, path_1.default.extname(outputFileName));
+    /**
+     * Generates a single output path based on the provided input file path and output file extension.
+     */
+    const generateOutputPath = (inputFilePath) => {
+        const inputSegments = path_1.default.normalize(inputFilePath).split(path_1.default.sep);
         const inputFile = inputSegments.pop();
-        const inputFileExt = extractFileExtension(inputFile) || '';
-        const inputFilenameWithoutExt = inputFile.replace(inputFileExt, '');
-        const resolvedPathSegments = replaceWildcard(inputSegments, outputSegments); // Resolve path segments
-        // If output file pattern contains '*', replace it with the input filename
+        const inputFileExt = path_1.default.extname(inputFile);
+        const inputFilenameWithoutExt = path_1.default.basename(inputFile, inputFileExt);
+        const resolvedPathSegments = replaceWildcardPath(inputSegments, outputSegments);
         if (outputFilenameWithoutExt.includes('*')) {
-            const finalExt = outputFileExt || inputFileExt; // If output extension isn't specified, use input file extension
-            const finalFilename = `${inputFilenameWithoutExt}${finalExt}`; // Concatenate filename and extension
-            resolvedPathSegments.push(finalFilename);
+            // If the output file pattern contains a wildcard '*', replace it with the input file name
+            const finalFilename = replaceWildcardFilename(inputFilenameWithoutExt, outputFilenameWithoutExt);
+            // Use the extension of the input file and not the extension specified for the output file.
+            resolvedPathSegments.push(`${finalFilename}${inputFileExt}`);
         }
         else {
-            // Otherwise, use the specified output filename
-            resolvedPathSegments.push(outputFilePattern);
+            // Otherwise, use the specified output file name
+            resolvedPathSegments.push(outputFileName);
         }
-        return resolvedPathSegments.join('/');
-    });
+        return path_1.default.join(...resolvedPathSegments);
+    };
+    return inputFilePaths.flatMap((inputFilePath) => generateOutputPath(inputFilePath));
 };
 exports.generateOutputFilePaths = generateOutputFilePaths;
 
@@ -18868,9 +18885,16 @@ const path_1 = __importDefault(__nccwpck_require__(1017));
 const utils_1 = __nccwpck_require__(6218);
 const error_1 = __nccwpck_require__(2747);
 const isValidFileExt = (filename) => {
-    // Allow input file extension inheritance by asterisk in addition to normal file formats
-    const fileExts = [...const_1.availableFileExtensions, '*'];
-    return fileExts.some((type) => filename.endsWith(type));
+    const availabilities = new Set([...const_1.availableFileExtensions, '*']);
+    const fileExt = path_1.default.extname(filename);
+    if (fileExt.includes('{')) {
+        const fileExts = fileExt
+            .replace(/[{}.]/g, '')
+            .split(',')
+            .map((ext) => `.${ext}`);
+        return fileExts.every((ext) => availabilities.has(ext));
+    }
+    return availabilities.has(fileExt);
 };
 exports.isValidFileExt = isValidFileExt;
 const commandValidator = async (userCommand, match) => {
