@@ -35,27 +35,44 @@ export const isFileExists = async (inputPath: string) => {
 /**
  * Replace the part with '**' with the rest
  */
-function replaceWildcard(inputArray: string[], outputArray: string[]) {
-  const output = [...outputArray]
+const replaceWildcardPath = (
+  inputArray: string[],
+  outputArray: string[],
+): string[] => {
   const indexOfAsteriskAsterisk = outputArray.indexOf('**')
+  // Return copy with no references
+  if (indexOfAsteriskAsterisk === -1) return [...outputArray]
 
-  if (indexOfAsteriskAsterisk !== -1) {
-    output.splice(
-      indexOfAsteriskAsterisk,
-      1,
-      ...inputArray.slice(indexOfAsteriskAsterisk),
-    )
-  }
-
-  return output
+  return [
+    ...outputArray.slice(0, indexOfAsteriskAsterisk),
+    ...inputArray.slice(indexOfAsteriskAsterisk),
+  ]
 }
 
 /**
- * Extracts the extension from a filename string
+ * Replaces the wildcard '*' in the output filename with the corresponding segments from the input filename,
+ * while preserving any modifiers after the wildcard in the output filename.
  */
-function extractFileExtension(filename: string): string | null {
-  const match = filename.match(/\.\w+(\.\w+)?$/)
-  return match ? match[0] : null
+const replaceWildcardFilename = (
+  inputFilenameWithoutExt: string,
+  outputFilenameWithoutExt: string,
+): string => {
+  if (!inputFilenameWithoutExt.includes('.')) {
+    return outputFilenameWithoutExt.replace('*', inputFilenameWithoutExt)
+  }
+
+  // Split filenames into segments based on '.'
+  const inputSegmentsReversed = inputFilenameWithoutExt.split('.').reverse()
+  const outputSegmentsReversed = outputFilenameWithoutExt.split('.').reverse()
+
+  const wildcardIndex = outputSegmentsReversed.indexOf('*')
+
+  // Construct the new filename by replacing the wildcard with the corresponding segments from the input filename
+  const mergedSegments = [
+    ...outputSegmentsReversed.slice(0, wildcardIndex),
+    ...inputSegmentsReversed.slice(wildcardIndex),
+  ]
+  return mergedSegments.reverse().join('.')
 }
 
 /**
@@ -71,29 +88,46 @@ export const generateOutputFilePaths = (
   inputFilePaths: string[],
   outputFilePath: string,
 ): string[] => {
-  const outputSegments = outputFilePath.replace('./', '').split('/')
-  const outputFilePattern = outputSegments.pop()!
-  const outputFileExt = extractFileExtension(outputFilePattern) || ''
-  const outputFilenameWithoutExt = outputFilePattern.replace(outputFileExt, '')
+  const outputSegments = path.normalize(outputFilePath).split(path.sep)
+  const outputFileName = outputSegments.pop()!
 
-  return inputFilePaths.map((inputFilePath) => {
-    const inputSegments = inputFilePath.split('/')
+  const outputFilenameWithoutExt = path.basename(
+    outputFileName,
+    path.extname(outputFileName),
+  )
+
+  /**
+   * Generates a single output path based on the provided input file path and output file extension.
+   */
+  const generateOutputPath = (inputFilePath: string): string => {
+    const inputSegments = path.normalize(inputFilePath).split(path.sep)
     const inputFile = inputSegments.pop()!
-    const inputFileExt = extractFileExtension(inputFile) || ''
-    const inputFilenameWithoutExt = inputFile.replace(inputFileExt, '')
+    const inputFileExt = path.extname(inputFile)
+    const inputFilenameWithoutExt = path.basename(inputFile, inputFileExt)
 
-    const resolvedPathSegments = replaceWildcard(inputSegments, outputSegments) // Resolve path segments
+    const resolvedPathSegments = replaceWildcardPath(
+      inputSegments,
+      outputSegments,
+    )
 
-    // If output file pattern contains '*', replace it with the input filename
     if (outputFilenameWithoutExt.includes('*')) {
-      const finalExt = outputFileExt || inputFileExt // If output extension isn't specified, use input file extension
-      const finalFilename = `${inputFilenameWithoutExt}${finalExt}` // Concatenate filename and extension
-      resolvedPathSegments.push(finalFilename)
+      // If the output file pattern contains a wildcard '*', replace it with the input file name
+      const finalFilename = replaceWildcardFilename(
+        inputFilenameWithoutExt,
+        outputFilenameWithoutExt,
+      )
+
+      // Use the extension of the input file and not the extension specified for the output file.
+      resolvedPathSegments.push(`${finalFilename}${inputFileExt}`)
     } else {
-      // Otherwise, use the specified output filename
-      resolvedPathSegments.push(outputFilePattern)
+      // Otherwise, use the specified output file name
+      resolvedPathSegments.push(outputFileName)
     }
 
-    return resolvedPathSegments.join('/')
-  })
+    return path.join(...resolvedPathSegments)
+  }
+
+  return inputFilePaths.flatMap((inputFilePath) =>
+    generateOutputPath(inputFilePath),
+  )
 }

@@ -1,2 +1,2 @@
 // File extensions for translation
-export const availableFileExtensions = ['.md', '.mdx']
+export const availableFileExtensions = ['.md', '.mdx', '.json']

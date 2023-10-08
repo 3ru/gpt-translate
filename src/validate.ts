@@ -4,9 +4,18 @@ import { postError, removeSymbols } from './utils'
 import { COMMAND_USAGE, INVALID_FILE_EXTENSION } from './error'
 
 export const isValidFileExt = (filename: string): boolean => {
-  // Allow input file extension inheritance by asterisk in addition to normal file formats
-  const fileExts = [...availableFileExtensions, '*']
-  return fileExts.some((type) => filename.endsWith(type))
+  const availabilities = new Set([...availableFileExtensions, '*'])
+  const fileExt = path.extname(filename)
+
+  if (fileExt.includes('{')) {
+    const fileExts = fileExt
+      .replace(/[{}.]/g, '')
+      .split(',')
+      .map((ext) => `.${ext}`)
+    return fileExts.every((ext) => availabilities.has(ext))
+  }
+
+  return availabilities.has(fileExt)
 }
 
 export const commandValidator = async (
