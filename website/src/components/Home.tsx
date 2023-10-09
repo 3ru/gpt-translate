@@ -10,7 +10,6 @@ export const Home = () => {
       ].join(' ')}
     >
       <h1 className='mx-auto max-w-5xl font-display text-5xl font-medium tracking-tight text-slate-100 dark:text-slate-200 sm:text-7xl drop-shadow-2xl'>
-        {/*Code's{' '}*/}
         Code&apos;s{' '}
         <span className='relative whitespace-nowrap text-transparent bg-clip-text bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-sky-500 to-emerald-400'>
           Universal.
