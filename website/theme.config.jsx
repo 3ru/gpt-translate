@@ -45,4 +45,7 @@ export default {
     { locale: 'en', text: 'English' },
     // { locale: 'ja', text: '日本語' },
   ],
+  search: {
+    placeholder: 'Search documentation...',
+  },
 }
