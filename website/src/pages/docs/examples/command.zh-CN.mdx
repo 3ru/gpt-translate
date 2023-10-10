@@ -1,0 +1,97 @@
+---
+标题：基于命令
+描述：通过在评论中输入命令来执行翻译的示例
+---
+
+# 基于命令
+
+通过在问题或PR的评论中键入命令进行翻译。
+
+## 工作流设置概述
+
+```yaml filename="gpt-translate.yml"
+name: GPT翻译
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  gpt_translate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 运行GPT翻译
+        if: |
+          contains(github.event.comment.body, '/gpt-translate') ||
+          contains(github.event.comment.body, '/gt')
+        uses: 3ru/gpt-translate@master
+        with:
+          apikey: ${{ secrets.OPENAI_API_KEY }}
+```
+
+## 解释
+
+```yaml {2-3}
+on:
+  issue_comment:
+    types: [created]
+```
+
+每次创建问题或拉取请求评论时，都会启动动作。
+
+---
+
+```yaml {2}
+steps:
+  - uses: actions/checkout@v3
+```
+
+将存储库检出到ubuntu环境。
+这将给`gpt-translate`提供对存储库中文件的翻译访问权限。
+
+换句话说，你必须始终提前检出存储库。
+
+---
+
+```yaml {2-4}
+- name: 运行GPT翻译
+  if: |
+    contains(github.event.comment.body, '/gpt-translate') ||
+    contains(github.event.comment.body, '/gt')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+```
+
+指定执行`gpt-translate`的条件。
+
+在这里，如果评论中包含`/gpt-translate`或`/gt`，则转到下一个过程。
+
+---
+
+```yaml {5}
+- name: 运行GPT翻译
+  if: |
+    contains(github.event.comment.body, '/gpt-translate') ||
+    contains(github.event.comment.body, '/gt')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+```
+
+使用`v1.1`的`gpt-translate`动作运行。
+
+你可以指定一个主要版本`@1`或一个分支`@master`，而不是指定一个特定的版本。
+[GitHub文档：使用公共动作](https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-a-public-action)
+
+---
+
+```yaml
+with:
+  apikey: ${{ secrets.OPENAI_API_KEY }}
+```
+
+从存储库秘密（加密）传递OpenAI API密钥

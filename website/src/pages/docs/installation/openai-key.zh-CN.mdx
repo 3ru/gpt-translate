@@ -1,0 +1,64 @@
+---
+标题：OpenAI API 密钥
+描述：准备用于委托翻译的API
+
+---
+
+导入 { Callout } 来自 'nextra-theme-docs'
+导入 { Steps } 来自 'nextra/components'
+
+如果你已经有一个OpenAI账户，跳到[密钥生成](#key-generation)。
+
+## 账户注册
+
+<Steps>
+
+### 访问 [OpenAI网站](https://platform.openai.com/)。
+
+### 创建一个账户
+
+你可以使用与你的OpenAI账户关联的电子邮件地址和密码登录，或者使用你现有的Google或Microsoft账户。
+
+</Steps>
+
+## 计费设置
+
+<Callout type='warning'>
+  OpenAI API目前不提供免费使用。你需要一个已付费账户发行的API密钥来使用这个工作流，否则你会得到
+  `openai.error.RateLimitError`。
+</Callout>
+
+<Steps>
+
+### 转到 [计费概览](https://platform.openai.com/billing)。
+
+![img](https://i.gyazo.com/24dfb9b63f01a695d0f646d7fd9a5d8b.png)
+
+### 设置付费账户
+
+![img](https://i.gyazo.com/47c80a01c9cceae9d67ab299114bedd7.png)
+
+</Steps>
+
+## 密钥生成
+
+<Steps>
+
+### 转到 [API密钥页面](https://platform.openai.com/account/api-keys)。
+
+![API Keys page](https://i.gyazo.com/5acc5d6417413a2f34fc52075bd52b74.png)
+
+### 创建一个新的API密钥
+
+点击 `创建新的密钥` 按钮。
+![Create new secret key](https://i.gyazo.com/b2797f624de75fb28e1732ead38f2676.png)
+
+输入API密钥的名称，然后点击 `创建密钥` 按钮。
+![secret key name input](https://i.gyazo.com/bfc3c62a78de701b53c2f05a37df32bb.png)
+
+### 复制API密钥。
+
+这个密钥将在下一个GitHub仓库设置中使用。不要关闭这个标签页，或者在某个地方临时记下它。
+![secret key](https://i.gyazo.com/b1ab2746efe410e0d25c530b150f94bb.png)
+
+</Steps>

@@ -1,0 +1,43 @@
+---
+标题：常见问题解答
+描述：常见问题解答
+布局：无
+---
+
+导入 { DocumentTextIcon, LanguageIcon } 来自 '@heroicons/react/24/outline'
+导入 { Card } 来自 '../../../components/Card'
+
+# 常见问题解答
+
+以下是一些常见问题（FAQs）和常见问题的解决方案。
+
+---
+
+### 我可以翻译哪些文件？
+
+目前只有 `markdown 文件` 可用。
+
+<Card
+  icon={<DocumentTextIcon />}
+  title='支持的文件格式'
+  href='/docs/references/supported-file-format'
+/>
+
+---
+
+### 它可以翻译成哪些语言？
+
+几乎任何语言
+
+<Card
+  icon={<LanguageIcon />}
+  title='支持的语言'
+  href='/docs/references/supported-language'
+/>
+
+---
+
+### 它是免费的吗？
+
+这个 GitHub Actions 工作流本身是免费的，但用于翻译的 OpenAI API 是付费的。
+[OpenAI API 价格](https://openai.com/pricing)

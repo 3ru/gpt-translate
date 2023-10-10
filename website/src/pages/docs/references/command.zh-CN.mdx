@@ -1,0 +1,123 @@
+---
+标题：命令参考
+描述：基于命令对文件进行翻译，指定文件和目标语言
+---
+
+导入 { Callout, FileTree, Steps, Tabs, Tab } from 'nextra/components'
+导入 { WrenchIcon } from '@heroicons/react/24/outline'
+导入 { BeforeAfter } from '../../../components/BeforeAfter'
+导入 { Card } from '../../../components/Card'
+
+# 命令参考
+
+## 格式
+
+```shell
+/gpt-translate [输入文件路径] [输出文件路径] [目标语言]
+```
+
+<Steps>
+
+### 注释
+
+在问题或拉取请求中使用 `/gpt-translate` 或 `/gt` 创建注释。
+
+<Callout type='info'>
+  您可以使用 `/gt` 作为 `/gpt-translate` 的简写。
+</Callout>
+
+### 将创建 PR
+
+<Tabs items={['在问题上', '在拉取请求上']}>
+  <Tab>
+    翻译后的文件将作为一个**拉取请求**创建。![在问题上的命令](https://i.gyazo.com/7e2c80bc12c46e137aed91e825ca4100.png)
+  </Tab>
+  <Tab>
+    翻译后的文件将**以新的提交添加到拉取请求中**。![在PR上的命令](https://i.gyazo.com/804e24e8596224f062f3193d26bc811c.png)
+  </Tab>
+</Tabs>
+
+</Steps>
+
+换句话说，如果你在一个问题上不断发表评论，新的 PR 将不断被创建。
+如果你在一个 PR 上不断发表评论，新的提交将不断被添加到该 PR 中。
+
+<Card
+  icon={<WrenchIcon />}
+  title='相关：路径规范'
+  href='/docs/references/path-builder'
+/>
+
+## 示例
+
+### 单个文件
+
+```bash
+/gpt-translate ./README.md ./JA/README.md Japanese
+```
+
+执行此命令时，预期会发生以下目录结构的变化。
+
+<BeforeAfter
+  before={
+    <FileTree>
+      <FileTree.File name='README.md' />
+    </FileTree>
+  }
+  after={
+    <FileTree>
+      <FileTree.File name='README.md' />
+      <FileTree.Folder name='JA' defaultOpen>
+        <FileTree.File name='README.md' active />
+      </FileTree.Folder>
+    </FileTree>
+  }
+/>
+
+根目录下的 `README.md` 将被新翻译为 `JA目录` 下的 `Japanese` 作为 `README.md`。
+
+### 多个文件
+
+<Callout type='info'>
+  输入文件的规范方法自 v1.1.6 版本开始已经扩展。请参阅 [路径规范页面](./path-builder.mdx) 了解详细信息。
+</Callout>
+
+```bash
+/gpt-translate ./EN/*.md ./JA/*.md Japanese
+```
+
+执行此命令时，预期会发生以下目录结构的变化。
+
+<BeforeAfter
+  before={
+    <FileTree>
+      <FileTree.File name='README.md' />
+      <FileTree.Folder name='EN' defaultOpen>
+        <FileTree.File name='getting-started.md' />
+        <FileTree.File name='setup.md' />
+        <FileTree.File name='hoge.webp' />
+      </FileTree.Folder>
+    </FileTree>
+  }
+  after={
+    <FileTree>
+      <FileTree.File name='README.md' />
+      <FileTree.Folder name='EN' defaultOpen>
+        <FileTree.File name='getting-started.md' />
+        <FileTree.File name='setup.md' />
+        <FileTree.File name='hoge.webp' />
+      </FileTree.Folder>
+      <FileTree.Folder name='JA' defaultOpen>
+        <FileTree.File name='getting-started.md' active />
+        <FileTree.File name='setup.md' active />
+      </FileTree.Folder>
+    </FileTree>
+  }
+/>
+
+`EN目录` 下的所有 markdown 文件将被翻译并输出到新的 `JA目录` 下。
+
+#### 提示
+
+GitHub 评论支持 markdown 符号，所以如果你使用星号(\*)，它将被转换为 _斜体_。
+这仍然会正常识别命令，但建议将命令放在 `codespan` (\`) 中。
