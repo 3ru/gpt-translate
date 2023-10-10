@@ -23,12 +23,13 @@ export const Home = () => {
       </h1>
       <p className='mx-auto mt-6 max-w-2xl text-sm sm:text-lg tracking-tight text-slate-200 dark:text-slate-300 drop-shadow-2xl'>
         Break language barriers with AI. GPT-Translate turns your docs into a
-        multilingual masterpiece, effortlessly catering to developers worldwide.
+        multilingual masterpiece, making them accessible to developers
+        everywhere.
       </p>
       <div className='mt-16 flex justify-center gap-x-6'>
         <Link
           href='/docs/overview/getting-started'
-          className='rounded-xl bg-sky-50 dark:bg-gray-900 px-6 py-3 font-semibold text-sm sm:text-lg text-sky-600 dark:text-sky-100 shadow-sm'
+          className='rounded-xl bg-sky-50 dark:bg-gray-900 px-8 py-3 font-semibold text-sm sm:text-md text-sky-600 dark:text-sky-100 shadow-sm hover:scale-105 duration-300'
         >
           Get Started
         </Link>
