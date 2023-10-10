@@ -8,20 +8,6 @@
 OpenAI API 目前不是免费的。你需要一个`付费账户`发出的 API 密钥来使用这个工作流程。  
 <img width="387" alt="image" src="https://github.com/3ru/gpt-translate/assets/69892552/8c803edb-85ef-41ee-a4be-be52b3a30eba">
 
-<br/>
-
-<details><summary>🧐 当前状态</summary>
-<p>
-
-- 该动作支持翻译 **markdown(`.md`) 和 markdown-jsx(`.mdx`) 文件**。
-
-- 命令只能由具有**对仓库有写权限的个人**执行。
-
-这些限制防止了非信任方的 API 滥用。
-
-</p>
-</details> 
-
 ## 🔧 设置
 
 ### 仓库设置
