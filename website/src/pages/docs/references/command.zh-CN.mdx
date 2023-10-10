@@ -3,10 +3,10 @@
 描述：基于命令对文件进行翻译，指定文件和目标语言
 ---
 
-导入 { Callout, FileTree, Steps, Tabs, Tab } from 'nextra/components'
-导入 { WrenchIcon } from '@heroicons/react/24/outline'
-导入 { BeforeAfter } from '../../../components/BeforeAfter'
-导入 { Card } from '../../../components/Card'
+import { Callout, FileTree, Steps, Tabs, Tab } from 'nextra/components'
+import { WrenchIcon } from '@heroicons/react/24/outline'
+import { BeforeAfter } from '../../../components/BeforeAfter'
+import { Card } from '../../../components/Card'
 
 # 命令参考
 
@@ -22,9 +22,7 @@
 
 在问题或拉取请求中使用 `/gpt-translate` 或 `/gt` 创建注释。
 
-<Callout type='info'>
-  您可以使用 `/gt` 作为 `/gpt-translate` 的简写。
-</Callout>
+<Callout type='info'>您可以使用 `/gt` 作为 `/gpt-translate` 的简写。</Callout>
 
 ### 将创建 PR
 
@@ -79,7 +77,8 @@
 ### 多个文件
 
 <Callout type='info'>
-  输入文件的规范方法自 v1.1.6 版本开始已经扩展。请参阅 [路径规范页面](./path-builder.mdx) 了解详细信息。
+  输入文件的规范方法自 v1.1.6 版本开始已经扩展。请参阅
+  [路径规范页面](./path-builder.mdx) 了解详细信息。
 </Callout>
 
 ```bash

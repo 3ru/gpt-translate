@@ -1,11 +1,10 @@
 ---
 标题：OpenAI API 密钥
 描述：准备用于委托翻译的API
-
 ---
 
-导入 { Callout } 来自 'nextra-theme-docs'
-导入 { Steps } 来自 'nextra/components'
+import { Callout } from 'nextra-theme-docs'
+import { Steps } from 'nextra/components'
 
 如果你已经有一个OpenAI账户，跳到[密钥生成](#key-generation)。
 
@@ -24,7 +23,8 @@
 ## 计费设置
 
 <Callout type='warning'>
-  OpenAI API目前不提供免费使用。你需要一个已付费账户发行的API密钥来使用这个工作流，否则你会得到
+  OpenAI
+  API目前不提供免费使用。你需要一个已付费账户发行的API密钥来使用这个工作流，否则你会得到
   `openai.error.RateLimitError`。
 </Callout>
 
