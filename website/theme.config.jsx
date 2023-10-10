@@ -43,6 +43,8 @@ export default {
   },
   i18n: [
     { locale: 'en', text: 'English' },
+    { locale: 'zh-CN', text: '简体中文' },
+    // { locale: 'zh-TW', text: '繁體中文' },
     // { locale: 'ja', text: '日本語' },
   ],
   search: {

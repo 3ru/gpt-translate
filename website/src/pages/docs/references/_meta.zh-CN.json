@@ -1,0 +1,7 @@
+{
+  "command": "命令",
+  "input": "动作输入",
+  "path-builder": "路径规范",
+  "supported-file-format": "支持的文件格式",
+  "supported-language": "支持的语言"
+}

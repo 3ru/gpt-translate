@@ -1,0 +1,54 @@
+---
+标题：动作输入
+描述：可以传递给动作的参数
+---
+
+import { BookOpenIcon } from '@heroicons/react/24/outline'
+import { Card } from '../../../components/Card'
+
+# 动作输入
+
+必填字段已用星号标记。
+
+| 名称          | 描述                                                               | 类型               |
+| ------------- | ------------------------------------------------------------------ | ------------------ |
+| `apikey`\*    | OpenAI API密钥                                                     | `secrets`          |
+| `inputFiles`  | 目标文件路径                                                       | `空格分隔的字符串` |
+| `outputFiles` | 输出路径                                                           | `空格分隔的字符串` |
+| `languages`   | 目标语言                                                           | `空格分隔的字符串` |
+| `model`       | [OpenAI语言模型](https://platform.openai.com/docs/models/overview) | `字符串`           |
+| `prompt`      | 对模型的指示                                                       | `字符串`           |
+| `basePath`    | openai api的基本路径                                               | `字符串`           |
+
+默认指定的模型是 `gpt-3.5-turbo-16k`。
+
+## `prompt`
+
+通过这种配置，您可以灵活地定义任何您选择的提示。
+
+```yaml
+with:
+  apikey: ${{ secrets.OPENAI_API_KEY }}
+  prompt: '请将给定的文本翻译成自然的{targetLanguage}。'
+```
+
+您可以使用 `{}` 括号嵌入两个动态变量，使您的提示更具体：
+
+- `targetLanguage` 表示期望的翻译语言。
+- `targetFileExt` 指定期望的文件扩展名（例如，`.md`）。
+
+例如，如果您希望提示翻译成特定语言并指定输出格式，您的配置可能如下所示：
+
+```yaml
+prompt: '请将给定的文本翻译成自然的{targetLanguage}，并以{targetFileExt}格式输出。'
+```
+
+---
+
+### 相关
+
+<Card
+  icon={<BookOpenIcon />}
+  title='路径规范'
+  href='/docs/references/path-builder'
+/>

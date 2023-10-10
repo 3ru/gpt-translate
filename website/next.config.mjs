@@ -25,6 +25,8 @@ export default withNextra({
   i18n: {
     locales: [
       'en',
+      'zh-CN',
+      // 'zh-TW',
       // 'ja'
     ],
     defaultLocale: 'en',

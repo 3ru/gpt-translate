@@ -1,0 +1,143 @@
+---
+标题：路径规定
+描述：如何使用我们自己的符号规定各种文件的路径
+---
+
+import { BeforeAfter } from '../../../components/BeforeAfter'
+import { Callout, FileTree } from 'nextra/components'
+
+# 路径规定
+
+此操作允许您使用自己的符号规定一个文件。
+
+如果你有更好的符号想法，请随时在[问题](https://github.com/3ru/gpt-translate/issues?q=is%3Aissue+is%3Aopen)或[讨论](https://github.com/3ru/gpt-translate/discussions)中提出 :)
+
+---
+
+### 单文件规定
+
+<FileTree>
+  <FileTree.File name='README.md' active />
+</FileTree>
+
+- 只有单个文件 `readme`
+  - `README.md`
+  - `./README.md`
+
+---
+
+### 多文件规定
+
+<FileTree>
+  <FileTree.File name='README.md' />
+  <FileTree.Folder name='EN' defaultOpen>
+    <FileTree.File name='getting-started.md' active />
+    <FileTree.File name='setup.md' active />
+  </FileTree.Folder>
+</FileTree>
+
+- EN目录下的所有markdown文件
+  - `EN/*.md`
+  - `./EN/*.md`
+
+---
+
+### 多层嵌套文件规定
+
+<Callout type='info'>
+  我们使用 `node-glob` 来识别输入文件。请参考[node-glob
+  仓库](https://github.com/isaacs/node-glob#readme)以获取更多信息。
+</Callout>
+
+<FileTree>
+  <FileTree.File name='README.md' />
+  <FileTree.Folder name='EN' defaultOpen>
+    <FileTree.File name='setup.md' active />
+    <FileTree.Folder name='foo' defaultOpen>
+      <FileTree.File name='bar.md' active />
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+- 要规定 `setup.md` 和 `bar.md`
+  - `EN/**/*.md`
+  - `./EN/**/*.md`
+
+## 通配符输出路径规定
+
+例如，你想将输入文件输出到指定目录下的某个位置。
+此时，如果你想保持输入文件的目录结构，你可以使用以下命令。
+
+```
+/gpt-translate EN/foo/bar.md JA/**/*.md Japanese
+```
+
+<BeforeAfter
+  before={
+    <FileTree>
+      <FileTree.Folder name='EN' defaultOpen>
+        <FileTree.Folder name='foo' defaultOpen>
+          <FileTree.File name='bar.md' active />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree>
+  }
+  after={
+    <FileTree>
+      <FileTree.Folder name='EN' defaultOpen>
+        <FileTree.Folder name='foo' defaultOpen>
+          <FileTree.File name='bar.md' />
+        </FileTree.Folder>
+      </FileTree.Folder>
+      <FileTree.Folder name='JA' defaultOpen>
+        <FileTree.Folder name='foo' defaultOpen>
+          <FileTree.File name='bar.md' active />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree>
+  }
+/>
+
+这里的重点是，输入文件的路径结构通过 `/**/` 来维持。
+`EN` 和 `JA` 由于它们与根目录的距离匹配，因此被正确地覆盖。
+
+文件格式也可以被继承，所以你可以注释以下内容
+
+```
+/gpt-translate EN/foo/bar.md JA/**/* Japanese
+```
+
+### 另一个用例
+
+将任何目录下的所有markdown写入到指定目录下的指定扩展名。
+
+```
+/gpt-translate EN/foo/*.md **/*.ja.md Japanese
+```
+
+<BeforeAfter
+  before={
+    <FileTree>
+      <FileTree.Folder name='EN' defaultOpen>
+        <FileTree.Folder name='foo' defaultOpen>
+          <FileTree.File name='bar.md' active />
+          <FileTree.File name='baz.md' active />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree>
+  }
+  after={
+    <FileTree>
+      <FileTree.Folder name='EN' defaultOpen>
+        <FileTree.Folder name='foo' defaultOpen>
+          <FileTree.File name='bar.md' />
+          <FileTree.File name='baz.md' />
+          <FileTree.File name='bar.ja.md' active />
+          <FileTree.File name='baz.ja.md' active />
+        </FileTree.Folder>
+      </FileTree.Folder>
+    </FileTree>
+  }
+/>
+
+因此，你可以使用 `**` 来继承目录和 `*` 来继承文件名。

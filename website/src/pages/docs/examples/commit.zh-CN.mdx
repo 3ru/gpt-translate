@@ -1,0 +1,123 @@
+---
+标题：基于提交的
+描述：每次提交执行翻译的示例
+---
+
+import { BookOpenIcon } from '@heroicons/react/24/outline'
+import { Card } from '../../../components/Card'
+
+# 基于提交的
+
+每次在特定分支上有提交时，就进行翻译。
+
+## 工作流设置概览
+
+```yaml filename="gpt-translate-commit.yml"
+name: GPT 每次提交进行翻译
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  gpt_translate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出最近两次提交的仓库
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: 获取更改的文件名
+        id: changed_files
+        run: |
+          echo "files=$(git diff --name-only HEAD^ HEAD | grep '\.md$' | tr '\n' ' ')" >> $GITHUB_OUTPUT
+
+      - name: 运行 GPT 翻译
+        uses: 3ru/gpt-translate@master
+        with:
+          apikey: ${{ secrets.OPENAI_API_KEY }}
+          inputFiles: ${{ steps.changed_files.outputs.files }}
+          outputFiles: 'JA/**/*.md FR/**/*.md'
+          languages: 'Japanese French'
+```
+
+## 解释
+
+```yaml {2-4}
+on:
+  push:
+    branches:
+      - main
+```
+
+每当 `main` 分支有提交时，它就会被调用。
+
+---
+
+```yaml {3-5}
+steps:
+  - name: 检出最近两次提交的仓库
+    uses: actions/checkout@v3
+    with:
+      fetch-depth: 2
+```
+
+检出最近两次的提交（HEAD 和它之前的一个）。
+
+通过比较最新的提交和它之前的提交，我们可以得到差异文件。
+
+---
+
+```yaml {2-4}
+- name: 获取更改的文件名
+  id: changed_files
+  run: |
+    echo "files=$(git diff --name-only HEAD^ HEAD | grep '\.md$' | tr '\n' ' ')" >> $GITHUB_OUTPUT
+```
+
+- `id: changed_files`
+  - 设置 id (`changed_files`) 以便从其他步骤中引用它。
+- `git diff --name-only HEAD^ HEAD | grep '\.md$'`
+  - 通过 `run` 中的命令从差异文件中提取出只有 markdown 文件。
+- `tr '\n' ' '`
+  - 然后将文件转换为以空格分隔的格式。
+- `>> $GITHUB_OUTPUT`
+  - 设置输出参数。
+
+---
+
+```yaml {5-7}
+- name: 运行 GPT 翻译
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+    inputFiles: ${{ steps.changed_files.outputs.files }}
+    outputFiles: 'JA/**/*.md FR/**/*.md'
+    languages: 'Japanese French'
+```
+
+- `inputFiles`
+  - 传递在上一步中输出的要翻译的文件的文件路径值。
+- `outputFiles`
+  - 指定两个目录，`JA` 和 `FR`，作为输出目标。
+- `languages`
+  - 指定翻译成 `Japanese` 和 `French`。
+    重要的是顺序要与 `outputFiles` 的顺序匹配。
+
+---
+
+### 相关
+
+<Card
+  icon={<BookOpenIcon />}
+  title='动作输入参考'
+  href='/docs/references/input'
+/>
+
+<Card
+  icon={<BookOpenIcon />}
+  title='路径规范'
+  href='/docs/references/path-builder'
+/>

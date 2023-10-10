@@ -1,0 +1,66 @@
+---
+标题：创建 GitHub Actions 工作流
+描述：工作流设置
+---
+
+import { BookOpenIcon, BookmarkSquareIcon } from '@heroicons/react/24/outline'
+import { Card } from '../../../components/Card'
+
+有许多方法可以设置工作流。
+
+## 通过命令
+
+以下是一个以命令格式执行翻译的样本配置。
+
+```yaml filename=".github/workflows/gpt-translate.yml"
+name: GPT 翻译
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  gpt_translate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 运行 GPT 翻译
+        if: |
+          contains(github.event.comment.body, '/gpt-translate') || 
+          contains(github.event.comment.body, '/gt')
+        uses: 3ru/gpt-translate@master
+        with:
+          apikey: ${{ secrets.OPENAI_API_KEY }}
+```
+
+#### 必需
+
+- 提供 `OPENAI_API_KEY` 作为 apiKey。
+  - 对于 OpenAI 模型使用是必需的
+- 提前进行检出(`actions/checkout@v3`)。
+  - 在运行 GPT 翻译以获取翻译文件内容之前，必须进行检出。
+
+一旦上述工作流设置并推送，就可以通过在**问题的评论**和**PRs**中输入命令来执行翻译。
+[演示](https://github.com/3ru/gpt-translate/issues/15)
+
+## 使用方法
+
+请参考以下内容了解翻译执行的详细信息。
+
+<Card
+  icon={<BookOpenIcon />}
+  title='命令参考'
+  href='/docs/references/command'
+/>
+
+## 其他工作流示例
+
+对于其他工作流，请参考以下样本。
+
+<Card
+  icon={<BookmarkSquareIcon />}
+  title='示例'
+  href='/docs/examples/command'
+/>

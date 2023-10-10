@@ -1,0 +1,47 @@
+---
+标题：文档
+描述：适用于网络的通用设计系统解决方案
+---
+
+import { Callout } from 'nextra/components'
+import {
+  KeyIcon,
+  Cog6ToothIcon,
+  PlusCircleIcon,
+} from '@heroicons/react/24/outline'
+import { Steps } from 'nextra/components'
+import { Card } from '../../../components/Card'
+
+<Callout type='info'>
+  这个文档网站目前正在**建设中**，有一些部分缺失。如果你需要的信息缺失，请随时在
+  [Issues](https://github.com/3ru/gpt-translate/issues?q=is%3Aissue+is%3Aopen)中报告。
+</Callout>
+
+GPT-Translate 是一个可以与 GitHub Actions 一起使用的自动化文档翻译操作（工作流）。
+
+## 安装
+
+<Steps>
+###
+<Card
+  icon={<KeyIcon />}
+  title='准备 OpenAI API 密钥'
+  href='/docs/installation/openai-key'
+/>
+
+###
+
+<Card
+  icon={<Cog6ToothIcon />}
+  title='仓库设置'
+  href='/docs/installation/repository-settings'
+/>
+
+###
+
+<Card
+  icon={<PlusCircleIcon />}
+  title='创建 GitHub Actions 工作流'
+  href='/docs/installation/create-workflow'
+/>
+</Steps>
