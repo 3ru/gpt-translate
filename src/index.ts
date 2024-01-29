@@ -18,7 +18,9 @@ async function main() {
       await translateByCommand(inputFilePath, outputFilePath, targetLang)
 
       break
+
     case 'push':
+    case 'workflow_dispatch':
       // ⚠ Experimental Feature
       // Translate any file from the parameter specification.
       // Multiple output and target languages can be selected.
@@ -29,8 +31,9 @@ async function main() {
       await translateByManual(inputFiles, outputFiles, languages)
 
       break
+
     default:
-      await postError('This event is not supported.')
+      throw new Error('This event is not supported.')
   }
 }
 
