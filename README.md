@@ -8,20 +8,6 @@ This GitHub action translates your markdown files into multiple languages using 
 The OpenAI API is currently not available for free. You need an API Key issued with a `paid account` to use this workflow.  
 <img width="387" alt="image" src="https://github.com/3ru/gpt-translate/assets/69892552/8c803edb-85ef-41ee-a4be-be52b3a30eba">
 
-<br/>
-
-<details><summary>🧐 Current Status</summary>
-<p>
-
-- The action supports translating **markdown(`.md`) and markdown-jsx(`.mdx`) files only**.
-
-- The command can be executed exclusively by individuals with **write permissions to the repository**.
-
-These limitations prevent API abuse by non-trusted parties.
-
-</p>
-</details> 
-
 ## 🔧 Setup
 
 ### Repository Settings
