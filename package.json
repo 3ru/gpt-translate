@@ -10,7 +10,10 @@
   "author": "Ryuya",
   "license": "MIT",
   "scripts": {
-    "build": "npx @vercel/ncc build src/index.ts -o dist"
+    "build": "npx @vercel/ncc build src/index.ts -o dist",
+    "release:patch": "scripts/update_version.sh Patch && npm run build",
+    "release:minor": "scripts/update_version.sh Minor && npm run build",
+    "release:major": "scripts/update_version.sh Major && npm run build"
   },
   "dependencies": {
     "@actions/core": "^1.10.0",
