@@ -1,10 +1,11 @@
 import { error, getInput, info, notice, setFailed } from '@actions/core'
 import OpenAI from 'openai'
 import { encode } from 'gpt-3-encoder'
+import { modelTokens, minimumTokens } from './const'
 
 const API_KEY = getInput('apikey')
 const BASE_PATH = getInput('basePath') || 'https://api.openai.com/v1'
-const MODEL = getInput('model') || 'gpt-3.5-turbo-16k'
+const MODEL = getInput('model') || Object.keys(modelTokens)[0]
 const PROMPT =
   getInput('prompt') ||
   'Please translate the given text into naturalistic {targetLanguage}.'
@@ -60,8 +61,7 @@ export const gptTranslate = async (
   targetFileExt: string, // filename extension. Must be within availableFileExtensions.
   splitter = `\n\n`,
 ): Promise<string> => {
-  const maxToken =
-    (MODEL.includes('32k') ? 32768 : MODEL.includes('16k') ? 16384 : 4096) / 2
+  const maxToken = modelTokens[MODEL] || minimumTokens
   const prompt = PROMPT.replaceAll(
     '{targetLanguage}',
     targetLanguage,
