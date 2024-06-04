@@ -2,57 +2,61 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/a13ea4f37913ba6ba570/maintainability)](https://codeclimate.com/github/3ru/gpt-translate/maintainability)
 [![GPT Translate](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml/badge.svg)](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml)
 
-このGitHubアクションは、GPT-3.5モデルを使用して、マークダウンファイルを複数の言語に翻訳します。
+[English](/README.md) |
+[简体中文](/README/README.zh-CN.md) |
+[繁體中文](/README/README.zh-TW.md) |
+[Español](/README.es.md) |
+[हिंदी, हिन्दी](/README.hi.md) |
+[한국어](/README.ko.md) |
+[日本語](/README.ja.md)
+
+このGitHubアクションは、GPT-4、GPT-3.5モデルを使用して、Markdownファイルを複数の言語に翻訳します。
+
+> [!Important]  
+> OpenAI APIは現在無料では利用できません。このワークフローを使用するには、`有料アカウント`で発行されたAPIキーが必要です。  
+> <img width="387" alt="image" src="https://github.com/3ru/gpt-translate/assets/69892552/8c803edb-85ef-41ee-a4be-be52b3a30eba">
 
 <br/>
 
-> GPT-4によるこのREADMEの要約
-> - これは、GPT-3.5を使用してマークダウンファイルを複数の言語に翻訳するGitHubアクションです。
-> - 使用するには、問題またはプルリクエストで/gpt-translateまたは/gtのコメントを作成し、入力/出力ファイルパスとターゲット言語を指定します。
-> - 翻訳されたファイルは、プルリクエスト（Issuesの場合）として作成されるか、既存のプルリクエストに新しいコミットとして追加されます（プルリクエストの場合）。
-
-<br/>
-
-<details><summary>🧐 現在の状況</summary>
+<details><summary>🧐 現在のステータス</summary>
 <p>
 
-- このアクションは、単一のマークダウンファイルの翻訳のみをサポートしています。
+- このアクションは、**markdown(`.md`)、markdown-jsx(`.mdx`)、json(`.json`)ファイルのみ**を翻訳することができます。
 
-- コマンドは、リポジトリに書き込み権限を持つ個人によってのみ実行できます。
+- コマンドは、**リポジトリへの書き込み権限を持つ個人**のみが実行できます。
 
-これらの制限により、信頼できないパーティーによるAPIの乱用を防止しています。
+これらの制限により、信頼されていない第三者によるAPIの乱用を防ぎます。
 
-将来的には、ディレクトリごとの翻訳や複数の選択機能を実装することを検討しています。
 </p>
 </details> 
 
 ## 🔧 セットアップ
 
-### リポジトリの設定
+### リポジトリ設定
 
 #### 1. 設定 > アクション > 一般
 
-- `Read and write permissions`を有効にする
-- `Allow GitHub Actions to create and approve pull requests`を有効にする
+- `読み取りおよび書き込み権限`を有効にする
+- `GitHub Actionsがプルリクエストを作成および承認できるようにする`を有効にする
   ![permissions](https://user-images.githubusercontent.com/69892552/228692074-d8d009a8-9272-4023-97b1-3cbc637d5d84.jpg)
 
-#### 2. 設定 > Secrets and variables > Actions
+#### 2. 設定 > シークレットと変数 > アクション
 
-- APIキー(`OPENAI_API_KEY`)をシークレットに設定する
+- [APIキー](https://platform.openai.com/account/api-keys)(`OPENAI_API_KEY`)をシークレットに設定する
   ![secrets](https://user-images.githubusercontent.com/69892552/228692421-22d7db33-4e32-4f28-b166-45b4d3ce2b11.jpg)
 
 
-### GitHub Actions Workflowの設定
+### GitHub Actions ワークフロー設定
 
 #### 必須
-- apiKeyとしてOPENAI_API_KEYを提供する。
-- コメントが作成されたときにトリガーするように`on`を設定する(`types: [ created ]`)。
-- 事前にチェックアウトする(`actions/checkout@v3`)。
+- OPENAI_API_KEYをapiKeyとして提供する。
+- コメントが作成されたときにトリガーされるように`on`を設定する（`types: [ created ]`）。
+- 事前にチェックアウトする（`actions/checkout@v3`）。
 
-#### 推奨（不必要な実行時間を最小限に抑えるため）
-- コメントに/gpt-translateまたは/gtが含まれている場合にのみ実行するように設定する。
+#### 推奨（不要な実行時間を最小限に抑えるため）
+- コメントに`/gpt-translate`または`/gt`が含まれている場合にのみ実行するように設定する。
 
-👇 以下は最小限のワークフローの例です:
+👇 以下は最小限のワークフロー例です：
 ```yaml
 # .github/workflows/gpt-translate.yml
 name: GPT Translate
@@ -66,36 +70,61 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Run GPT Translate
         if: |
           contains(github.event.comment.body, '/gpt-translate') || 
           contains(github.event.comment.body, '/gt')
-        uses: 3ru/gpt-translate@v1.0
+        uses: 3ru/gpt-translate@master
         with:
           apikey: ${{ secrets.OPENAI_API_KEY }}
 ```
 
 
-## 💡 使い方
+## 💡 使用方法
 
 ```
-/gpt-translate [input filepath] [output filepath] [target language] 
+/gpt-translate [入力ファイルパス] [出力ファイルパス] [ターゲット言語] 
 ```
-/gtは/gpt-translateの略記法として使用できます。
+/gpt-translateの代わりに/gtを使用することもできます。
 
-1.Issuesまたはプルリクエストで/gpt-translateまたは/gtを含むコメントを作成します。
+1. イシューまたはプルリクエストに`/gpt-translate`または`/gt`を含むコメントを作成します。
 
-2.【Issuesの場合】翻訳されたファイルは**プルリクエスト**として作成されます。
+2.【イシューの場合】翻訳されたファイルは**プルリクエスト**として作成されます。
 
-2.【プルリクエストの場合】翻訳されたファイルは**新しいコミットとして既存のプルリクエストに追加**されます。
+2.【プルリクエストの場合】翻訳されたファイルは**新しいコミットとしてプルリクエストに追加されます**。
 
-つまり、Issuesにコメントを続けると、新しいPRが継続的に作成されます。
-PRにコメントを続けると、新しいコミットが継続的にそのPRに追加されます。
+つまり、イシューにコメントを続けると、新しいPRが継続的に作成されます。
+プルリクエストにコメントを続けると、新しいコミットが継続的にそのPRに追加されます。
 
-## 🌐 サポートされる言語
-GPT-3.5によって解釈される任意の言語
+## 📝 例
+```
+/gpt-translate README.md zh-TW/README.md traditional-chinese
+```
+`README.md`を繁体字中国語に翻訳し、`zh-TW`ディレクトリに配置します。
+
+### 複数ファイルのサポート
+
+入力ファイルパスにワイルドカードを指定することで、複数のファイルを一度に翻訳することができます。
+
+以下はサンプルです：
+```
+/gpt-translate *.md *.ja.md Japanese
+```
+ルートディレクトリに`A.md`と`B.md`がある場合、出力は`A.ja.md`と`B.ja.md`になります。ファイル名は入力ファイルから継承されます。
+任意のファイル名で出力することを検討していますが、スマートなアイデアがあれば、イシューを通じて提案してください！
+
+詳細については、[ウェブサイト](https://g-t.vercel.app/docs/references/path-builder)を参照してください。
+
+## 🌐 サポートされている言語
+GPT-4またはGPT-3.5によって解釈される**任意の言語**
+
+## 🏘️ コミュニティ
+- [ディスカッション](https://github.com/3ru/gpt-translate/discussions)
+  - 質問がある場合は、GitHubディスカッションでお気軽にお尋ねください :)
+- [イシュー](https://github.com/3ru/gpt-translate/issues)
+  - バグや新機能の提案はGitHubイシューに提出してください
 
 ## 📃 ライセンス
-MIT License
+MITライセンス
