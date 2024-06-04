@@ -2,9 +2,10 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/a13ea4f37913ba6ba570/maintainability)](https://codeclimate.com/github/3ru/gpt-translate/maintainability)
 [![GPT Translate](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml/badge.svg)](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml)
 
-[English](/README.md) | 
+[English](/README.md) |
 [简体中文](/README/README.zh-CN.md) |
-[繁體中文](/README/README.zh-TW.md)
+[繁體中文](/README/README.zh-TW.md) |
+[日本語](/README.ja.md)
 
 このGitHubアクションは、GPT-4、GPT-3.5モデルを使用して、Markdownファイルを複数の言語に翻訳します。
 

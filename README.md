@@ -4,8 +4,8 @@
 
 [English](/README.md) | 
 [简体中文](/README/README.zh-CN.md) |
-[繁體中文](/README/README.zh-TW.md)
-
+[繁體中文](/README/README.zh-TW.md) |
+[日本語](/README.ja.md) 
 
 This GitHub action translates your markdown files into multiple languages using the GPT-4, GPT-3.5 model.
 
