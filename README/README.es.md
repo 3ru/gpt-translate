@@ -12,7 +12,7 @@
 
 Esta acción de GitHub traduce tus archivos markdown a múltiples idiomas utilizando el modelo GPT-4, GPT-3.5.
 
-> [!Importante]  
+> [!Important]  
 > La API de OpenAI actualmente no está disponible de forma gratuita. Necesitas una clave API emitida con una `cuenta de pago` para usar este flujo de trabajo.  
 > <img width="387" alt="image" src="https://github.com/3ru/gpt-translate/assets/69892552/8c803edb-85ef-41ee-a4be-be52b3a30eba">
 

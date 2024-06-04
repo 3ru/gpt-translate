@@ -12,7 +12,7 @@
 
 이 GitHub 액션은 GPT-4, GPT-3.5 모델을 사용하여 마크다운 파일을 여러 언어로 번역합니다.
 
-> [!중요]  
+> [!Important]   
 > OpenAI API는 현재 무료로 제공되지 않습니다. 이 워크플로를 사용하려면 `유료 계정`으로 발급된 API 키가 필요합니다.  
 > <img width="387" alt="image" src="https://github.com/3ru/gpt-translate/assets/69892552/8c803edb-85ef-41ee-a4be-be52b3a30eba">
 
