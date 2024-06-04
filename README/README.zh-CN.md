@@ -8,7 +8,7 @@
 
 这个 GitHub Action 使用 GPT-4 和 GPT-3.5 模型将你的 Markdown 文件翻译成多种语言。
 
-> [!重要]  
+> [!Important]  
 > OpenAI API 目前不免费。你需要一个 `付费账户` 发行的 API Key 才能使用此工作流。  
 > <img width="387" alt="image" src="https://github.com/3ru/gpt-translate/assets/69892552/8c803edb-85ef-41ee-a4be-be52b3a30eba">
 
