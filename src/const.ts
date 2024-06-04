@@ -12,6 +12,7 @@ export const modelTokens = {
   'gpt-3.5-turbo-16k': 16385,
   'gpt-3.5-turbo-0613': 4096,
   'gpt-3.5-turbo-16k-0613': 16385,
+  'gpt-4o': 128000,
   'gpt-4-turbo': 128000,
   'gpt-4-turbo-2024-04-09': 128000,
   'gpt-4-turbo-preview': 128000,
