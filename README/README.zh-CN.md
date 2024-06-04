@@ -2,9 +2,9 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/a13ea4f37913ba6ba570/maintainability)](https://codeclimate.com/github/3ru/gpt-translate/maintainability)
 [![GPT Translate](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml/badge.svg)](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml)
 
-[English](README.md) | 
-[简体中文](README/README.zh-CN.md) |
-[繁體中文](README/README.zh-TW.md)
+[English](/README.md) | 
+[简体中文](/README/README.zh-CN.md) |
+[繁體中文](/README/README.zh-TW.md)
 
 这个 GitHub Action 使用 GPT-4 和 GPT-3.5 模型将你的 Markdown 文件翻译成多种语言。
 
