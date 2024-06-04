@@ -2,18 +2,23 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/a13ea4f37913ba6ba570/maintainability)](https://codeclimate.com/github/3ru/gpt-translate/maintainability)
 [![GPT Translate](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml/badge.svg)](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml)
 
+[English](README.md) | 
+[简体中文](README/README.zh-CN.md) |
+[繁體中文](README/README.zh-TW.md)
+
+
 This GitHub action translates your markdown files into multiple languages using the GPT-4, GPT-3.5 model.
 
-### ⚠️**Warning**
-The OpenAI API is currently not available for free. You need an API Key issued with a `paid account` to use this workflow.  
-<img width="387" alt="image" src="https://github.com/3ru/gpt-translate/assets/69892552/8c803edb-85ef-41ee-a4be-be52b3a30eba">
+> [!Important]  
+> The OpenAI API is currently not available for free. You need an API Key issued with a `paid account` to use this workflow.  
+> <img width="387" alt="image" src="https://github.com/3ru/gpt-translate/assets/69892552/8c803edb-85ef-41ee-a4be-be52b3a30eba">
 
 <br/>
 
 <details><summary>🧐 Current Status</summary>
 <p>
 
-- The action supports translating **markdown(`.md`) and markdown-jsx(`.mdx`) files only**.
+- The action supports translating **markdown(`.md`), markdown-jsx(`.mdx`), json(`.json`) files only**.
 
 - The command can be executed exclusively by individuals with **write permissions to the repository**.
 
@@ -111,7 +116,7 @@ I am considering outputting the file with an arbitrary file name, but if you hav
 For more information, please refer to the [website](https://g-t.vercel.app/docs/references/path-builder)
 
 ## 🌐 Supported Languages
-Any language interpreted by GPT-4 or GPT-3.5
+**Any language** interpreted by GPT-4 or GPT-3.5
 
 ## 🏘️ Community
 - [Discussions](https://github.com/3ru/gpt-translate/discussions)
