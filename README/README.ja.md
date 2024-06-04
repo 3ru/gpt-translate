@@ -5,6 +5,9 @@
 [English](/README.md) |
 [简体中文](/README/README.zh-CN.md) |
 [繁體中文](/README/README.zh-TW.md) |
+[Español](/README.es.md) |
+[हिंदी, हिन्दी](/README.hi.md) |
+[한국어](/README.ko.md) |
 [日本語](/README.ja.md)
 
 このGitHubアクションは、GPT-4、GPT-3.5モデルを使用して、Markdownファイルを複数の言語に翻訳します。
