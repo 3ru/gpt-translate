@@ -1,9 +1,5 @@
 import { error, getInput, info, notice, setFailed } from '@actions/core'
-import {
-  ChatCompletionRequestMessageRoleEnum,
-  Configuration,
-  OpenAIApi,
-} from 'openai'
+import OpenAI from 'openai'
 import { encode } from 'gpt-3-encoder'
 import { modelTokens, minimumTokens } from './const'
 
@@ -17,26 +13,25 @@ if (!API_KEY) {
   setFailed('Error: API_KEY could not be retrieved.')
 }
 
-const configuration = new Configuration({
+const configuration = {
   apiKey: API_KEY,
   basePath: BASE_PATH,
+}
+// const openAIApi = new OpenAI(configuration)
+const openAIApi = new OpenAI({
+  apiKey: API_KEY,
+  baseURL: BASE_PATH,
 })
-const openAIApi = new OpenAIApi(configuration)
 
 export const askGPT = async (text: string, prompt: string): Promise<string> => {
   const {
-    data: {
-      choices: [{ message: { content: content } = { content: '' } }],
-    },
-  } = await openAIApi
-    .createChatCompletion({
+    choices: [{ message: { content: content } = { content: '' } }],
+  } = await openAIApi.chat.completions
+    .create({
       model: MODEL,
       messages: [
-        {
-          role: ChatCompletionRequestMessageRoleEnum.System,
-          content: prompt,
-        },
-        { role: ChatCompletionRequestMessageRoleEnum.User, content: text },
+        { role: 'system', content: prompt },
+        { role: 'user', content: text },
       ],
       top_p: 0.5,
     })
@@ -52,8 +47,9 @@ export const askGPT = async (text: string, prompt: string): Promise<string> => {
       process.exit(1)
     })
 
-  if (content === '') {
+  if (!content || content === '') {
     info('Possible Error: Translation result is empty')
+    return ''
   }
 
   return content
