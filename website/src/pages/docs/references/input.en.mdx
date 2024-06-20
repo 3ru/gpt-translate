@@ -3,24 +3,31 @@ title: Action Inputs
 description: Arguments that can be passed to the action
 ---
 
-import { BookOpenIcon } from '@heroicons/react/24/outline'
+import { BookOpenIcon, BookmarkSquareIcon } from '@heroicons/react/24/outline'
 import { Card } from '../../../components/Card'
 
 # Action Inputs
 
 Required fields are asterisked.
 
-| Name          | Description                                                               | type                     |
-| ------------- | ------------------------------------------------------------------------- | ------------------------ |
-| `apikey`\*    | OpenAI API Key                                                            | `secrets`                |
-| `inputFiles`  | target file paths                                                         | `space-delimited string` |
-| `outputFiles` | output paths                                                              | `space-delimited string` |
-| `languages`   | target language                                                           | `space-delimited string` |
-| `model`       | [OpenAI language model](https://platform.openai.com/docs/models/overview) | `string`                 |
-| `prompt`      | Instructions to the model                                                 | `string`                 |
-| `basePath`    | base path of openai api                                                   | `string`                 |
+| Name                | Description                                                               | type                     |
+| ------------------- | ------------------------------------------------------------------------- | ------------------------ |
+| `apikey`\*          | OpenAI API Key                                                            | `secrets`                |
+| `inputFiles`        | target file paths                                                         | `space-delimited string` |
+| `outputFiles`       | output paths                                                              | `space-delimited string` |
+| `languages`         | target language                                                           | `space-delimited string` |
+| `model`             | [OpenAI language model](https://platform.openai.com/docs/models/overview) | `string`                 |
+| `prompt`            | Instructions to the model                                                 | `string`                 |
+| `basePath`          | base path of openai api                                                   | `string`                 |
+| `top_p`             | Controls diversity via nucleus sampling (0 to 1)                          | `number`                 |
+| `temperature`       | Controls randomness (0 to 2)                                              | `number`                 |
+| `n`                 | Number of chat completion choices to generate (1 to 10)                   | `number`                 |
+| `max_tokens`        | Maximum number of tokens to generate                                      | `number`                 |
+| `presence_penalty`  | Penalizes new tokens based on their existing presence (-2 to 2)           | `number`                 |
+| `frequency_penalty` | Penalizes new tokens based on their frequency (-2 to 2)                   | `number`                 |
+| `seed`              | Seed value for deterministic sampling                                     | `number`                 |
 
-The model specified by default is `gpt-3.5-turbo-16k`.
+The model specified by default is `gpt-3.5-turbo-0125`.
 
 ## `prompt`
 
@@ -51,4 +58,10 @@ prompt: 'Please translate the given text into naturalistic {targetLanguage} and 
   icon={<BookOpenIcon />}
   title='Path Specification'
   href='/docs/references/path-builder'
+/>
+
+<Card
+  icon={<BookmarkSquareIcon />}
+  title='OpenAI API Reference'
+  href='https://platform.openai.com/docs/api-reference/chat/create'
 />

@@ -8,7 +8,7 @@ inputs:
     description: 'OpenAI API Key'
     required: true
   model:
-    description: 'OpenAI Model'
+    description: 'ID of the OpenAI Model'
     required: false
   prompt:
     description: 'Instructions to the model'
@@ -25,6 +25,33 @@ inputs:
   languages:
     description: 'Language to translate to'
     required: false
+  top_p:
+    description: 'Controls diversity via nucleus sampling (0 to 1)'
+    required: false
+    default: '0.5'
+  temperature:
+    description: 'Controls randomness of the output (0 to 2)'
+    required: false
+    default: '0.3'
+  n:
+    description: 'Number of chat completion choices to generate (1 to 10)'
+    required: false
+    default: '1'
+  max_tokens:
+    description: 'Maximum number of tokens in the chat completion'
+    required: false
+  presence_penalty:
+    description: 'Penalizes new tokens based on their existing presence (-2 to 2)'
+    required: false
+    default: '0'
+  frequency_penalty:
+    description: 'Penalizes new tokens based on their frequency (-2 to 2)'
+    required: false
+    default: '0'
+  seed:
+    description: 'Seed value for deterministic sampling'
+    required: false
+
 runs:
   using: 'node20'
   main: 'dist/index.js'
