@@ -1,4 +1,4 @@
-import { setFailed } from '@actions/core'
+import { getInput, setFailed } from '@actions/core'
 import { gitPostComment } from './git'
 import { context } from '@actions/github'
 
@@ -60,4 +60,19 @@ export const generatePRBody = (
   }|
   ${issueNumber ? `|**Issue**|#${issueNumber}|` : ''}
   `
+}
+
+/**
+ * Get the @actions getInput value as a number.
+ */
+export const getInputAsNumber = (name: string): number | null | undefined => {
+  const input = getInput(name)
+  if (!input) {
+    return undefined // if the input is empty
+  }
+  const parsed = Number(input)
+  if (isNaN(parsed)) {
+    return null // if the input is not a number
+  }
+  return parsed
 }

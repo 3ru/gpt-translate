@@ -1,27 +1,21 @@
-import { error, getInput, info, notice, setFailed } from '@actions/core'
+import { error, getInput, info, notice } from '@actions/core'
 import OpenAI from 'openai'
 import { encode } from 'gpt-3-encoder'
 import { modelTokens, minimumTokens } from './const'
+import { getInputAsNumber } from './utils'
 
-const API_KEY = getInput('apikey')
+const API_KEY = getInput('apikey', { required: true })
 const BASE_PATH = getInput('basePath') || 'https://api.openai.com/v1'
 const MODEL = getInput('model') || Object.keys(modelTokens)[0]
 const PROMPT =
   getInput('prompt') ||
   'Please translate the given text into naturalistic {targetLanguage}.'
-if (!API_KEY) {
-  setFailed('Error: API_KEY could not be retrieved.')
-}
 
 const configuration = {
   apiKey: API_KEY,
   basePath: BASE_PATH,
 }
-// const openAIApi = new OpenAI(configuration)
-const openAIApi = new OpenAI({
-  apiKey: API_KEY,
-  baseURL: BASE_PATH,
-})
+const openAIApi = new OpenAI(configuration)
 
 export const askGPT = async (text: string, prompt: string): Promise<string> => {
   const {
@@ -33,7 +27,13 @@ export const askGPT = async (text: string, prompt: string): Promise<string> => {
         { role: 'system', content: prompt },
         { role: 'user', content: text },
       ],
-      top_p: 0.5,
+      top_p: getInputAsNumber('top_p'),
+      temperature: getInputAsNumber('temperature'),
+      n: getInputAsNumber('n'),
+      max_tokens: getInputAsNumber('max_tokens'),
+      presence_penalty: getInputAsNumber('presence_penalty'),
+      frequency_penalty: getInputAsNumber('frequency_penalty'),
+      seed: getInputAsNumber('seed'),
     })
     .catch((err) => {
       error(err)
