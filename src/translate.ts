@@ -3,7 +3,6 @@ import path from 'path'
 import { glob } from 'glob'
 import { context } from '@actions/github'
 import { info } from '@actions/core'
-import { gptTranslate } from './gpt'
 import { generatePRBody, isPR } from './utils'
 import {
   gitCheckout,
@@ -14,6 +13,7 @@ import {
   gitSetConfig,
 } from './git'
 import { createFile, generateOutputFilePaths, isFileExists } from './file'
+import translator from './ai'
 
 export const translateByCommand = async (
   inputFilePath: string,
@@ -104,7 +104,7 @@ export const createTranslatedFiles = async (
   const processFiles = inputFilePaths.map(async (inputFile, i) => {
     const content = await fs.readFile(inputFile, 'utf-8')
     const ext = path.extname(inputFile)
-    const translated = await gptTranslate(content, targetLang, ext)
+    const translated = await translator.translate(content, targetLang, ext)
 
     // Check if the translation is same as the original
     if (await isFileExists(outputFilePaths[i])) {
