@@ -26,7 +26,7 @@ This GitHub action translates your markdown files into multiple languages using 
 > [!TIP]
 > Now Available: **AI Models from Multiple Providers✨**  \
 > We've expanded beyond OpenAI to support various AI model providers.  \
-> For a comprehensive [list of supported providers](https://g-t.vercel.app/docs/references/supported-model-provider) and detailed information, please refer to our [release notes]().
+> For a comprehensive [list of supported providers](https://g-t.vercel.app/docs/references/supported-model-provider) and detailed information, please refer to our [release notes](https://github.com/3ru/gpt-translate/releases/tag/v1.2.0-beta).
 
 <br/>
 
