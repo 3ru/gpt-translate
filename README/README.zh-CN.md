@@ -22,7 +22,7 @@
 
 这个 GitHub 动作使用多个 AI 模型将你的 markdown 文件翻译成多种语言。
 
-> [!提示]
+> [!Important]
 > 现已推出：**来自多个提供商的 AI 模型✨**  \
 > 我们已扩展支持多种 AI 模型提供商，不再局限于 OpenAI。  \
 > 有关支持的提供商的完整列表和详细信息，请参阅我们的[发布说明](https://github.com/3ru/gpt-translate/releases/tag/v1.2.0-beta)。
