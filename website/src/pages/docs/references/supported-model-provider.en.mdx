@@ -1,0 +1,244 @@
+---
+title: Supported Model Providers
+Description: List of supported model providers
+---
+
+import { Callout } from 'nextra-theme-docs'
+import { BookOpenIcon } from '@heroicons/react/24/outline'
+import { Card } from '../../../components/Card'
+
+# Supported Model Providers
+
+### [OpenAI](https://openai.com/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='Models'
+  href='https://platform.openai.com/docs/models'
+/>
+
+<details>
+<summary>Example of Workflow Setting</summary>
+<div>
+
+```yaml filename="gpt-translate.yml"
+- name: Run GPT Translate
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+    provider: 'openai'
+    model: 'gpt-4o'
+```
+
+</div></details>
+
+### [Groq](https://groq.com/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='Models'
+  href='https://console.groq.com/docs/models'
+/>
+
+<details>
+<summary>Example of Workflow Setting</summary>
+<div>
+
+<Callout type='info' emoji='ℹ️'>
+  Groq is supported via [**OpenAI API
+  compatibility**](https://console.groq.com/docs/openai). Therefore, `provider`
+  should be `openai`.
+</Callout>
+
+```yaml filename="gpt-translate.yml"
+- name: Run GPT Translate
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+    provider: 'openai'
+    model: 'llama3-8b-8192'
+```
+
+</div></details>
+
+### [Perplexity](https://docs.perplexity.ai/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='Models'
+  href='https://docs.perplexity.ai/docs/model-cards'
+/>
+
+<details>
+<summary>Example of Workflow Setting</summary>
+<div>
+
+<Callout type='info' emoji='ℹ️'>
+  Perplexity is supported via **OpenAI API compatibility**. Therefore,
+  `provider` should be `openai`.
+</Callout>
+
+```yaml filename="gpt-translate.yml"
+- name: Run GPT Translate
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+    provider: 'openai'
+    model: 'llama-3-sonar-large-32k-chat'
+```
+
+</div></details>
+
+### [Fireworks](https://fireworks.ai/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='Models'
+  href='https://fireworks.ai/models'
+/>
+
+<details>
+<summary>Example of Workflow Setting</summary>
+<div>
+
+<Callout type='info' emoji='ℹ️'>
+  Fireworks is supported via **OpenAI API compatibility**. Therefore, `provider`
+  should be `openai`.
+</Callout>
+
+```yaml filename="gpt-translate.yml"
+- name: Run GPT Translate
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+    provider: 'openai'
+    model: 'accounts/fireworks/models/firefunction-v2'
+```
+
+</div></details>
+
+### [Azure](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='Models'
+  href='https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models'
+/>
+
+<details>
+<summary>Example of Workflow Setting</summary>
+<div>
+
+```yaml filename="gpt-translate.yml"
+- name: Run GPT Translate
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.AZURE_API_KEY }}
+    provider: 'azure'
+    model: 'your-deployment-name'
+```
+
+Set your Azure resource name in the Actions secrets variable `AZURE_RESOURCE_NAME`.
+
+</div></details>
+
+### [Anthropic](https://www.anthropic.com/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='Models'
+  href='https://docs.anthropic.com/en/docs/about-claude/models'
+/>
+
+<details>
+<summary>Example of Workflow Setting</summary>
+<div>
+
+```yaml filename="gpt-translate.yml"
+- name: Run GPT Translate
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.ANTHROPIC_API_KEY }}
+    provider: 'anthropic'
+    model: 'claude-3-5-sonnet-20240620'
+```
+
+</div></details>
+
+### [Google Generative AI](https://ai.google/discover/generativeai/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='Models'
+  href='https://ai.google.dev/gemini-api/docs/models/gemini#model-variations'
+/>
+
+<details>
+<summary>Example of Workflow Setting</summary>
+<div>
+
+```yaml filename="gpt-translate.yml"
+- name: Run GPT Translate
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+    provider: 'google'
+    model: 'models/gemini-1.5-pro'
+```
+
+</div></details>
+
+### [Mistral](https://mistral.ai/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='Models'
+  href='https://docs.mistral.ai/getting-started/models/'
+/>
+
+<details>
+<summary>Example of Workflow Setting</summary>
+<div>
+
+```yaml filename="gpt-translate.yml"
+- name: Run GPT Translate
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.MISTRAL_API_KEY }}
+    provider: 'mistral'
+    model: 'open-mistral-7b'
+```
+
+</div></details>
+
+### [Cohere](https://cohere.com/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='Models'
+  href='https://docs.cohere.com/docs/models'
+/>
+
+<details>
+<summary>Example of Workflow Setting</summary>
+<div>
+
+```yaml filename="gpt-translate.yml"
+- name: Run GPT Translate
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.COHERE_API_KEY }}
+    provider: 'cohere'
+    model: 'command-r-plus'
+```
+
+</div></details>
