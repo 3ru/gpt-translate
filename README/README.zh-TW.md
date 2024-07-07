@@ -23,7 +23,7 @@
 
 這個 GitHub Action 使用多個 AI 模型將你的 Markdown 文件翻譯成多種語言。
 
-> [!TIP]
+> [!Important]
 > 現在可用：**來自多個提供商的 AI 模型✨**  \
 > 我們已經擴展到支持多個 AI 模型提供商。  \
 > 有關支持的提供商的完整[列表](https://g-t.vercel.app/docs/references/supported-model-provider)和詳細信息，請參閱我們的[發佈說明](https://github.com/3ru/gpt-translate/releases/tag/v1.2.0-beta)。

@@ -23,7 +23,7 @@
 
 このGitHubアクションは、複数のAIモデルを使用してMarkdownファイルを多言語に翻訳します。
 
-> [!TIP]
+> [!Important]
 > 今利用可能: **複数のプロバイダーからのAIモデル✨**  \
 > OpenAIだけでなく、さまざまなAIモデルプロバイダーをサポートするようになりました。  \
 > サポートされているプロバイダーの包括的な[リスト](https://g-t.vercel.app/docs/references/supported-model-provider)と詳細情報については、[リリースノート](https://github.com/3ru/gpt-translate/releases/tag/v1.2.0-beta)をご参照ください。

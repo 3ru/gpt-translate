@@ -22,7 +22,7 @@
 
 이 GitHub 액션은 여러 AI 모델을 사용하여 마크다운 파일을 여러 언어로 번역합니다.
 
-> [!TIP]
+> [!Important]
 > 이제 사용 가능: **다양한 제공업체의 AI 모델✨**  \
 > OpenAI를 넘어 다양한 AI 모델 제공업체를 지원합니다.  \
 > 지원되는 제공업체의 [전체 목록](https://g-t.vercel.app/docs/references/supported-model-provider)과 자세한 정보는 [릴리스 노트](https://github.com/3ru/gpt-translate/releases/tag/v1.2.0-beta)를 참조하세요.

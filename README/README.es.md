@@ -23,7 +23,7 @@
 
 Esta acción de GitHub traduce tus archivos markdown a múltiples idiomas utilizando varios modelos de IA.
 
-> [!TIP]
+> [!Important]  
 > Ahora Disponible: **Modelos de IA de Múltiples Proveedores✨**  \
 > Nos hemos expandido más allá de OpenAI para soportar varios proveedores de modelos de IA.  \
 > Para una lista completa de [proveedores soportados](https://g-t.vercel.app/docs/references/supported-model-provider) e información detallada, por favor consulta nuestras [notas de lanzamiento](https://github.com/3ru/gpt-translate/releases/tag/v1.2.0-beta).
