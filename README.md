@@ -2,6 +2,17 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/a13ea4f37913ba6ba570/maintainability)](https://codeclimate.com/github/3ru/gpt-translate/maintainability)
 [![GPT Translate](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml/badge.svg)](https://github.com/3ru/gpt-translate/actions/workflows/gpt-translate.yml)
 
+[![OpenAI](https://img.shields.io/badge/-OpenAI-white?style=flat-square&logo=openai&logoColor=black)](https://openai.com/)
+[![Azure](https://img.shields.io/badge/-Microsoft%20Azure-white?style=flat-square&logo=microsoftazure&color=0078D4)](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
+[![Anthropic](https://img.shields.io/badge/-Anthropic-black?style=flat-square&logo=anthropic&logoColor=black&color=d4a27f)](https://www.anthropic.com/)
+[![Perplexity](https://img.shields.io/badge/-Perplexity-black?style=flat-square&logo=perplexity&color=black)](https://docs.perplexity.ai/)
+[![Google](https://img.shields.io/badge/-Google%20gemini-white?style=flat-square&logo=googlegemini&color=white)](https://ai.google/discover/generativeai/)
+[![Groq](https://img.shields.io/badge/-Groq-black?style=flat-square&logoColor=black&color=F55036)](https://groq.com/)
+[![Fireworks](https://img.shields.io/badge/-Fireworks%20AI-black?style=flat-square&color=631fee)](https://fireworks.ai/)
+[![Mistral](https://img.shields.io/badge/-Mistral%20AI-black?style=flat-square&color=ff7000)](https://mistral.ai/)
+[![Cohere](https://img.shields.io/badge/-Cohere-black?style=flat-square&color=39594c)](https://cohere.com/)
+
+
 [English](/README.md) |
 [简体中文](/README/README.zh-CN.md) |
 [繁體中文](/README/README.zh-TW.md) |
@@ -10,11 +21,12 @@
 [한국어](/README/README.ko.md) |
 [日本語](/README/README.ja.md)
 
-This GitHub action translates your markdown files into multiple languages using the GPT-4, GPT-3.5 model.
+This GitHub action translates your markdown files into multiple languages using multiple AI models.
 
-> [!Important]  
-> The OpenAI API is currently not available for free. You need an API Key issued with a `paid account` to use this workflow.  
-> <img width="387" alt="image" src="https://github.com/3ru/gpt-translate/assets/69892552/8c803edb-85ef-41ee-a4be-be52b3a30eba">
+> [!TIP]
+> Now Available: **AI Models from Multiple Providers✨**  \
+> We've expanded beyond OpenAI to support various AI model providers.  \
+> For a comprehensive [list of supported providers](https://g-t.vercel.app/docs/references/supported-model-provider) and detailed information, please refer to our [release notes]().
 
 <br/>
 

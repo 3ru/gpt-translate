@@ -65,14 +65,14 @@ export const generatePRBody = (
 /**
  * Get the @actions getInput value as a number.
  */
-export const getInputAsNumber = (name: string): number | null | undefined => {
+export const getInputAsNumber = (name: string): number | undefined => {
   const input = getInput(name)
   if (!input) {
     return undefined // if the input is empty
   }
   const parsed = Number(input)
   if (isNaN(parsed)) {
-    return null // if the input is not a number
+    return undefined // if the input is not a number
   }
   return parsed
 }

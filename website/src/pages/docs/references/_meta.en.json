@@ -3,5 +3,6 @@
   "input": "Action Inputs",
   "path-builder": "Path Specification",
   "supported-file-format": "Supported File Format",
-  "supported-language": "Supported Language"
+  "supported-language": "Supported Language",
+  "supported-model-provider": "Supported Model Providers"
 }

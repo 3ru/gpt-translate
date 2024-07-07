@@ -10,24 +10,27 @@ import { Card } from '../../../components/Card'
 
 Required fields are asterisked.
 
-| Name                | Description                                                               | type                     |
-| ------------------- | ------------------------------------------------------------------------- | ------------------------ |
-| `apikey`\*          | OpenAI API Key                                                            | `secrets`                |
-| `inputFiles`        | target file paths                                                         | `space-delimited string` |
-| `outputFiles`       | output paths                                                              | `space-delimited string` |
-| `languages`         | target language                                                           | `space-delimited string` |
-| `model`             | [OpenAI language model](https://platform.openai.com/docs/models/overview) | `string`                 |
-| `prompt`            | Instructions to the model                                                 | `string`                 |
-| `basePath`          | base path of openai api                                                   | `string`                 |
-| `top_p`             | Controls diversity via nucleus sampling (0 to 1)                          | `number`                 |
-| `temperature`       | Controls randomness (0 to 2)                                              | `number`                 |
-| `n`                 | Number of chat completion choices to generate (1 to 10)                   | `number`                 |
-| `max_tokens`        | Maximum number of tokens to generate                                      | `number`                 |
-| `presence_penalty`  | Penalizes new tokens based on their existing presence (-2 to 2)           | `number`                 |
-| `frequency_penalty` | Penalizes new tokens based on their frequency (-2 to 2)                   | `number`                 |
-| `seed`              | Seed value for deterministic sampling                                     | `number`                 |
+| Name                | Description                                                       | type                     |
+| ------------------- | ----------------------------------------------------------------- | ------------------------ |
+| `apikey`\*          | API Key                                                           | `secrets`                |
+| `provider`          | AI provider                                                       | `string`                 |
+| `model`             | The language model to use                                         | `string`                 |
+| `inputFiles`        | target file paths                                                 | `space-delimited string` |
+| `outputFiles`       | output paths                                                      | `space-delimited string` |
+| `languages`         | target language                                                   | `space-delimited string` |
+| `prompt`            | The input prompt to generate the text from                        | `string`                 |
+| `systemPrompt`      | The system prompt to use that specifies the behavior of the model | `string`                 |
+| `basePath`          | base path of openai api                                           | `string`                 |
+| `top_p`             | Controls diversity via nucleus sampling (0 to 1)                  | `number`                 |
+| `temperature`       | Controls randomness (0 to 2)                                      | `number`                 |
+| `max_tokens`        | Maximum number of tokens to generate                              | `number`                 |
+| `presence_penalty`  | Penalizes new tokens based on their existing presence (-2 to 2)   | `number`                 |
+| `frequency_penalty` | Penalizes new tokens based on their frequency (-2 to 2)           | `number`                 |
+| `seed`              | Seed value for deterministic sampling                             | `number`                 |
 
-The model specified by default is `gpt-3.5-turbo-0125`.
+The default provider is `openai` and the model is `gpt-4o`.
+
+Refer to the [Metadata file](https://github.com/3ru/gpt-translate/blob/master/action.yml#L7-L54) for more information.
 
 ## `prompt`
 

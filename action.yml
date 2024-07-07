@@ -5,13 +5,22 @@ inputs:
     description: 'GITHUB_TOKEN or a `repo` scoped Personal Access Token (PAT)'
     default: ${{ github.token }}
   apikey:
-    description: 'OpenAI API Key'
+    description: 'API Key'
     required: true
-  model:
-    description: 'ID of the OpenAI Model'
+  provider:
+    description: 'AI Provider'
     required: false
+    default: 'openai'
+  model:
+    description: 'The language model to use.'
+    required: false
+    default: 'gpt-4o'
   prompt:
-    description: 'Instructions to the model'
+    description: 'The input prompt to generate the text from'
+    required: false
+    default: 'Please translate the given text into naturalistic {targetLanguage}.'
+  systemPrompt:
+    description: 'The system prompt to use that specifies the behavior of the model'
     required: false
   basePath:
     description: 'Replace the base path of openai api'
@@ -33,10 +42,6 @@ inputs:
     description: 'Controls randomness of the output (0 to 2)'
     required: false
     default: '0.3'
-  n:
-    description: 'Number of chat completion choices to generate (1 to 10)'
-    required: false
-    default: '1'
   max_tokens:
     description: 'Maximum number of tokens in the chat completion'
     required: false
