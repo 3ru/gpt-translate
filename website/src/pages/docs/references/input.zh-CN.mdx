@@ -1,54 +1,70 @@
 ---
-标题：动作输入
-描述：可以传递给动作的参数
+title: 操作输入
+description: 可以传递给操作的参数
 ---
 
-import { BookOpenIcon } from '@heroicons/react/24/outline'
+import { BookOpenIcon, BookmarkSquareIcon } from '@heroicons/react/24/outline'
 import { Card } from '../../../components/Card'
 
-# 动作输入
+# 操作输入
 
-必填字段已用星号标记。
+必填字段标有星号。
 
-| 名称          | 描述                                                               | 类型               |
-| ------------- | ------------------------------------------------------------------ | ------------------ |
-| `apikey`\*    | OpenAI API密钥                                                     | `secrets`          |
-| `inputFiles`  | 目标文件路径                                                       | `空格分隔的字符串` |
-| `outputFiles` | 输出路径                                                           | `空格分隔的字符串` |
-| `languages`   | 目标语言                                                           | `空格分隔的字符串` |
-| `model`       | [OpenAI语言模型](https://platform.openai.com/docs/models/overview) | `字符串`           |
-| `prompt`      | 对模型的指示                                                       | `字符串`           |
-| `basePath`    | openai api的基本路径                                               | `字符串`           |
+| 名称                | 描述                                                             | 类型                     |
+| ------------------- | ---------------------------------------------------------------- | ------------------------ |
+| `apikey`\*          | API 密钥                                                         | `secrets`                |
+| `provider`          | AI 提供商                                                        | `string`                 |
+| `model`             | 使用的语言模型                                                   | `string`                 |
+| `inputFiles`        | 目标文件路径                                                     | `空格分隔的字符串`       |
+| `outputFiles`       | 输出路径                                                         | `空格分隔的字符串`       |
+| `languages`         | 目标语言                                                         | `空格分隔的字符串`       |
+| `prompt`            | 用于生成文本的输入提示                                           | `string`                 |
+| `systemPrompt`      | 指定模型行为的系统提示                                           | `string`                 |
+| `basePath`          | OpenAI API 的基本路径                                            | `string`                 |
+| `top_p`             | 通过核采样控制多样性（0 到 1）                                   | `number`                 |
+| `temperature`       | 控制随机性（0 到 2）                                             | `number`                 |
+| `max_tokens`        | 生成的最大令牌数                                                 | `number`                 |
+| `presence_penalty`  | 根据现有存在惩罚新令牌（-2 到 2）                                | `number`                 |
+| `frequency_penalty` | 根据频率惩罚新令牌（-2 到 2）                                    | `number`                 |
+| `seed`              | 确定性采样的种子值                                               | `number`                 |
 
-默认指定的模型是 `gpt-3.5-turbo-16k`。
+默认提供商是 `openai`，模型是 `gpt-4o`。
+
+有关更多信息，请参阅 [元数据文件](https://github.com/3ru/gpt-translate/blob/master/action.yml#L7-L54)。
 
 ## `prompt`
 
-通过这种配置，您可以灵活地定义任何您选择的提示。
+通过此配置，您可以灵活定义任何提示。
 
 ```yaml
 with:
   apikey: ${{ secrets.OPENAI_API_KEY }}
-  prompt: '请将给定的文本翻译成自然的{targetLanguage}。'
+  prompt: '请将给定文本翻译成自然的 {targetLanguage}。'
 ```
 
 您可以使用 `{}` 括号嵌入两个动态变量，使您的提示更具体：
 
-- `targetLanguage` 表示期望的翻译语言。
-- `targetFileExt` 指定期望的文件扩展名（例如，`.md`）。
+- `targetLanguage` 表示所需的翻译语言。
+- `targetFileExt` 指定所需的文件扩展名（例如 `.md`）。
 
 例如，如果您希望提示翻译成特定语言并指定输出格式，您的配置可能如下所示：
 
 ```yaml
-prompt: '请将给定的文本翻译成自然的{targetLanguage}，并以{targetFileExt}格式输出。'
+prompt: '请将给定文本翻译成自然的 {targetLanguage} 并以 {targetFileExt} 格式输出。'
 ```
 
 ---
 
-### 相关
+### 相关内容
 
 <Card
   icon={<BookOpenIcon />}
   title='路径规范'
   href='/docs/references/path-builder'
+/>
+
+<Card
+  icon={<BookmarkSquareIcon />}
+  title='OpenAI API 参考'
+  href='https://platform.openai.com/docs/api-reference/chat/create'
 />

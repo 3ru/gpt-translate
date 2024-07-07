@@ -1,0 +1,239 @@
+---
+title: 支持的模型提供商
+description: 支持的模型提供商列表
+---
+
+import { Callout } from 'nextra-theme-docs'
+import { BookOpenIcon } from '@heroicons/react/24/outline'
+import { Card } from '../../../components/Card'
+
+# 支持的模型提供商
+
+### [OpenAI](https://openai.com/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='模型'
+  href='https://platform.openai.com/docs/models'
+/>
+
+<details>
+<summary>工作流设置示例</summary>
+<div>
+
+```yaml filename="gpt-translate.yml"
+- name: 运行 GPT 翻译
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+    provider: 'openai'
+    model: 'gpt-4o'
+```
+
+</div></details>
+
+### [Groq](https://groq.com/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='模型'
+  href='https://console.groq.com/docs/models'
+/>
+
+<details>
+<summary>工作流设置示例</summary>
+<div>
+
+<Callout type='info' emoji='ℹ️'>
+  Groq 通过 [**OpenAI API 兼容性**](https://console.groq.com/docs/openai)
+  提供支持。因此，`provider` 应设置为 `openai`。
+</Callout>
+
+```yaml filename="gpt-translate.yml"
+- name: 运行 GPT 翻译
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+    provider: 'openai'
+    model: 'llama3-8b-8192'
+```
+
+</div></details>
+
+### [Perplexity](https://docs.perplexity.ai/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='模型'
+  href='https://docs.perplexity.ai/docs/model-cards'
+/>
+
+<details>
+<summary>工作流设置示例</summary>
+<div>
+
+<Callout type='info' emoji='ℹ️'>
+  Perplexity 通过 **OpenAI API 兼容性** 提供支持。因此，`provider` 应设置为
+  `openai`。
+</Callout>
+
+```yaml filename="gpt-translate.yml"
+- name: 运行 GPT 翻译
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+    provider: 'openai'
+    model: 'llama-3-sonar-large-32k-chat'
+```
+
+</div></details>
+
+### [Fireworks](https://fireworks.ai/)
+
+<Card icon={<BookOpenIcon />} title='模型' href='https://fireworks.ai/models' />
+
+<details>
+<summary>工作流设置示例</summary>
+<div>
+
+<Callout type='info' emoji='ℹ️'>
+  Fireworks 通过 **OpenAI API 兼容性** 提供支持。因此，`provider` 应设置为
+  `openai`。
+</Callout>
+
+```yaml filename="gpt-translate.yml"
+- name: 运行 GPT 翻译
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.OPENAI_API_KEY }}
+    provider: 'openai'
+    model: 'accounts/fireworks/models/firefunction-v2'
+```
+
+</div></details>
+
+### [Azure](https://azure.microsoft.com/en-us/products/ai-services/openai-service)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='模型'
+  href='https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models'
+/>
+
+<details>
+<summary>工作流设置示例</summary>
+<div>
+
+```yaml filename="gpt-translate.yml"
+- name: 运行 GPT 翻译
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.AZURE_API_KEY }}
+    provider: 'azure'
+    model: 'your-deployment-name'
+```
+
+在 Actions secrets 变量 `AZURE_RESOURCE_NAME` 中设置您的 Azure 资源名称。
+
+</div></details>
+
+### [Anthropic](https://www.anthropic.com/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='模型'
+  href='https://docs.anthropic.com/en/docs/about-claude/models'
+/>
+
+<details>
+<summary>工作流设置示例</summary>
+<div>
+
+```yaml filename="gpt-translate.yml"
+- name: 运行 GPT 翻译
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.ANTHROPIC_API_KEY }}
+    provider: 'anthropic'
+    model: 'claude-3-5-sonnet-20240620'
+```
+
+</div></details>
+
+### [Google 生成式 AI](https://ai.google/discover/generativeai/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='模型'
+  href='https://ai.google.dev/gemini-api/docs/models/gemini#model-variations'
+/>
+
+<details>
+<summary>工作流设置示例</summary>
+<div>
+
+```yaml filename="gpt-translate.yml"
+- name: 运行 GPT 翻译
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+    provider: 'google'
+    model: 'models/gemini-1.5-pro'
+```
+
+</div></details>
+
+### [Mistral](https://mistral.ai/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='模型'
+  href='https://docs.mistral.ai/getting-started/models/'
+/>
+
+<details>
+<summary>工作流设置示例</summary>
+<div>
+
+```yaml filename="gpt-translate.yml"
+- name: 运行 GPT 翻译
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.MISTRAL_API_KEY }}
+    provider: 'mistral'
+    model: 'open-mistral-7b'
+```
+
+</div></details>
+
+### [Cohere](https://cohere.com/)
+
+<Card
+  icon={<BookOpenIcon />}
+  title='模型'
+  href='https://docs.cohere.com/docs/models'
+/>
+
+<details>
+<summary>工作流设置示例</summary>
+<div>
+
+```yaml filename="gpt-translate.yml"
+- name: 运行 GPT 翻译
+  if: contains(github.event.comment.body, '/gpt-translate')
+  uses: 3ru/gpt-translate@master
+  with:
+    apikey: ${{ secrets.COHERE_API_KEY }}
+    provider: 'cohere'
+    model: 'command-r-plus'
+```
+
+</div></details>
