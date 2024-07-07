@@ -1,28 +1,28 @@
----
-title: Supported Model Providers
-Description: List of supported model providers
+标题: 支持的模型提供商
+描述: 支持的模型提供商列表
+
 ---
 
 import { Callout } from 'nextra-theme-docs'
 import { BookOpenIcon } from '@heroicons/react/24/outline'
 import { Card } from '../../../components/Card'
 
-# Supported Model Providers
+# 支持的模型提供商
 
 ### [OpenAI](https://openai.com/)
 
 <Card
   icon={<BookOpenIcon />}
-  title='Models'
+  title='模型'
   href='https://platform.openai.com/docs/models'
 />
 
 <details>
-<summary>Example of Workflow Setting</summary>
+<summary>工作流设置示例</summary>
 <div>
 
 ```yaml filename="gpt-translate.yml"
-- name: Run GPT Translate
+- name: 运行 GPT 翻译
   if: contains(github.event.comment.body, '/gpt-translate')
   uses: 3ru/gpt-translate@master
   with:
@@ -37,22 +37,20 @@ import { Card } from '../../../components/Card'
 
 <Card
   icon={<BookOpenIcon />}
-  title='Models'
+  title='模型'
   href='https://console.groq.com/docs/models'
 />
 
 <details>
-<summary>Example of Workflow Setting</summary>
+<summary>工作流设置示例</summary>
 <div>
 
 <Callout type='info' emoji='ℹ️'>
-  Groq is supported via [**OpenAI API
-  compatibility**](https://console.groq.com/docs/openai). Therefore, `provider`
-  should be `openai`.
+  Groq 通过 [**OpenAI API 兼容性**](https://console.groq.com/docs/openai) 提供支持。因此，`provider` 应设置为 `openai`。
 </Callout>
 
 ```yaml filename="gpt-translate.yml"
-- name: Run GPT Translate
+- name: 运行 GPT 翻译
   if: contains(github.event.comment.body, '/gpt-translate')
   uses: 3ru/gpt-translate@master
   with:
@@ -67,21 +65,20 @@ import { Card } from '../../../components/Card'
 
 <Card
   icon={<BookOpenIcon />}
-  title='Models'
+  title='模型'
   href='https://docs.perplexity.ai/docs/model-cards'
 />
 
 <details>
-<summary>Example of Workflow Setting</summary>
+<summary>工作流设置示例</summary>
 <div>
 
 <Callout type='info' emoji='ℹ️'>
-  Perplexity is supported via **OpenAI API compatibility**. Therefore,
-  `provider` should be `openai`.
+  Perplexity 通过 **OpenAI API 兼容性** 提供支持。因此，`provider` 应设置为 `openai`。
 </Callout>
 
 ```yaml filename="gpt-translate.yml"
-- name: Run GPT Translate
+- name: 运行 GPT 翻译
   if: contains(github.event.comment.body, '/gpt-translate')
   uses: 3ru/gpt-translate@master
   with:
@@ -96,21 +93,20 @@ import { Card } from '../../../components/Card'
 
 <Card
   icon={<BookOpenIcon />}
-  title='Models'
+  title='模型'
   href='https://fireworks.ai/models'
 />
 
 <details>
-<summary>Example of Workflow Setting</summary>
+<summary>工作流设置示例</summary>
 <div>
 
 <Callout type='info' emoji='ℹ️'>
-  Fireworks is supported via **OpenAI API compatibility**. Therefore, `provider`
-  should be `openai`.
+  Fireworks 通过 **OpenAI API 兼容性** 提供支持。因此，`provider` 应设置为 `openai`。
 </Callout>
 
 ```yaml filename="gpt-translate.yml"
-- name: Run GPT Translate
+- name: 运行 GPT 翻译
   if: contains(github.event.comment.body, '/gpt-translate')
   uses: 3ru/gpt-translate@master
   with:
@@ -125,16 +121,16 @@ import { Card } from '../../../components/Card'
 
 <Card
   icon={<BookOpenIcon />}
-  title='Models'
+  title='模型'
   href='https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models'
 />
 
 <details>
-<summary>Example of Workflow Setting</summary>
+<summary>工作流设置示例</summary>
 <div>
 
 ```yaml filename="gpt-translate.yml"
-- name: Run GPT Translate
+- name: 运行 GPT 翻译
   if: contains(github.event.comment.body, '/gpt-translate')
   uses: 3ru/gpt-translate@master
   with:
@@ -143,7 +139,7 @@ import { Card } from '../../../components/Card'
     model: 'your-deployment-name'
 ```
 
-Set your Azure resource name in the Actions secrets variable `AZURE_RESOURCE_NAME`.
+在 Actions secrets 变量 `AZURE_RESOURCE_NAME` 中设置您的 Azure 资源名称。
 
 </div></details>
 
@@ -151,16 +147,16 @@ Set your Azure resource name in the Actions secrets variable `AZURE_RESOURCE_NAM
 
 <Card
   icon={<BookOpenIcon />}
-  title='Models'
+  title='模型'
   href='https://docs.anthropic.com/en/docs/about-claude/models'
 />
 
 <details>
-<summary>Example of Workflow Setting</summary>
+<summary>工作流设置示例</summary>
 <div>
 
 ```yaml filename="gpt-translate.yml"
-- name: Run GPT Translate
+- name: 运行 GPT 翻译
   if: contains(github.event.comment.body, '/gpt-translate')
   uses: 3ru/gpt-translate@master
   with:
@@ -171,20 +167,20 @@ Set your Azure resource name in the Actions secrets variable `AZURE_RESOURCE_NAM
 
 </div></details>
 
-### [Google Generative AI](https://ai.google/discover/generativeai/)
+### [Google 生成式 AI](https://ai.google/discover/generativeai/)
 
 <Card
   icon={<BookOpenIcon />}
-  title='Models'
+  title='模型'
   href='https://ai.google.dev/gemini-api/docs/models/gemini#model-variations'
 />
 
 <details>
-<summary>Example of Workflow Setting</summary>
+<summary>工作流设置示例</summary>
 <div>
 
 ```yaml filename="gpt-translate.yml"
-- name: Run GPT Translate
+- name: 运行 GPT 翻译
   if: contains(github.event.comment.body, '/gpt-translate')
   uses: 3ru/gpt-translate@master
   with:
@@ -199,16 +195,16 @@ Set your Azure resource name in the Actions secrets variable `AZURE_RESOURCE_NAM
 
 <Card
   icon={<BookOpenIcon />}
-  title='Models'
+  title='模型'
   href='https://docs.mistral.ai/getting-started/models/'
 />
 
 <details>
-<summary>Example of Workflow Setting</summary>
+<summary>工作流设置示例</summary>
 <div>
 
 ```yaml filename="gpt-translate.yml"
-- name: Run GPT Translate
+- name: 运行 GPT 翻译
   if: contains(github.event.comment.body, '/gpt-translate')
   uses: 3ru/gpt-translate@master
   with:
@@ -223,16 +219,16 @@ Set your Azure resource name in the Actions secrets variable `AZURE_RESOURCE_NAM
 
 <Card
   icon={<BookOpenIcon />}
-  title='Models'
+  title='模型'
   href='https://docs.cohere.com/docs/models'
 />
 
 <details>
-<summary>Example of Workflow Setting</summary>
+<summary>工作流设置示例</summary>
 <div>
 
 ```yaml filename="gpt-translate.yml"
-- name: Run GPT Translate
+- name: 运行 GPT 翻译
   if: contains(github.event.comment.body, '/gpt-translate')
   uses: 3ru/gpt-translate@master
   with:
