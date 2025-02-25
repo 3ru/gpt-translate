@@ -5,58 +5,106 @@ export const minimumTokens = 4096
  * OpenAI
  * https://platform.openai.com/docs/models
  *
- * maxTokens = input + output https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/chatgpt?tabs=python-new#manage-conversations
+ * Values are set based on Max output tokens from the latest documentation
  */
 const openAIModels = {
-  'gpt-3.5-turbo-0125': 16385 / 2,
-  'gpt-3.5-turbo': 16385 / 2,
-  'gpt-3.5-turbo-1106': 16385 / 2,
-  'gpt-3.5-turbo-instruct': 4096 / 2,
-  'gpt-3.5-turbo-16k': 16385 / 2,
-  'gpt-3.5-turbo-0613': 4096 / 2,
-  'gpt-3.5-turbo-16k-0613': 16385 / 2,
-  'gpt-4o': 128000 / 2,
-  'gpt-4-turbo': 128000 / 2,
-  'gpt-4-turbo-2024-04-09': 128000 / 2,
-  'gpt-4-turbo-preview': 128000 / 2,
-  'gpt-4-0125-preview': 128000 / 2,
-  'gpt-4-1106-preview': 128000 / 2,
-  'gpt-4-vision-preview': 128000 / 2,
-  'gpt-4-1106-vision-preview': 128000 / 2,
-  'gpt-4': 8192 / 2,
-  'gpt-4-0613': 8192 / 2,
-  'gpt-4-32k': 32768 / 2,
-  'gpt-4-32k-0613': 32768 / 2,
+  // GPT-4o models
+  'gpt-4o': 16384,
+  'gpt-4o-2024-11-20': 16384,
+  'gpt-4o-2024-08-06': 16384,
+  'gpt-4o-2024-05-13': 4096,
+  'chatgpt-4o-latest': 16384,
+  
+  // GPT-4o mini models
+  'gpt-4o-mini': 16384,
+  'gpt-4o-mini-2024-07-18': 16384,
+  
+  // o1 and o1-mini models
+  'o1': 100000,
+  'o1-2024-12-17': 100000,
+  'o1-mini': 65536,
+  'o1-mini-2024-09-12': 65536,
+  'o1-preview': 32768,
+  'o1-preview-2024-09-12': 32768,
+  
+  // o3-mini models
+  'o3-mini': 100000,
+  'o3-mini-2025-01-31': 100000,
+  
+  // GPT-4o Realtime models
+  'gpt-4o-realtime-preview': 4096,
+  'gpt-4o-realtime-preview-2024-12-17': 4096,
+  'gpt-4o-realtime-preview-2024-10-01': 4096,
+  'gpt-4o-mini-realtime-preview': 4096,
+  'gpt-4o-mini-realtime-preview-2024-12-17': 4096,
+  
+  // GPT-4o Audio models
+  'gpt-4o-audio-preview': 16384,
+  'gpt-4o-audio-preview-2024-12-17': 16384,
+  'gpt-4o-audio-preview-2024-10-01': 16384,
+  'gpt-4o-mini-audio-preview': 16384,
+  'gpt-4o-mini-audio-preview-2024-12-17': 16384,
+  
+  // GPT-4 Turbo and GPT-4 models
+  'gpt-4-turbo': 4096,
+  'gpt-4-turbo-2024-04-09': 4096,
+  'gpt-4-turbo-preview': 4096,
+  'gpt-4-0125-preview': 4096,
+  'gpt-4-1106-preview': 4096,
+  'gpt-4': 8192,
+  'gpt-4-0613': 8192,
+  'gpt-4-0314': 8192,
+  
+  // GPT-3.5 Turbo models
+  'gpt-3.5-turbo-0125': 4096,
+  'gpt-3.5-turbo': 4096,
+  'gpt-3.5-turbo-1106': 4096,
+  'gpt-3.5-turbo-instruct': 4096,
 }
 
 /**
  * Groq (OpenAI Compatibility)
  * https://console.groq.com/docs/models
  *
- * maxTokens = input + output
+ * Values are set based on Max Completion Tokens where available, otherwise half of Context Window
  */
 const groqModels = {
-  'llama3-8b-8192': 8192 / 2,
-  'llama3-70b-8192': 8192 / 2,
-  'mixtral-8x7b-32768': 32768 / 2,
-  'gemma-7b-it': 8192 / 2,
+  // Production Models
+  'gemma2-9b-it': 4096,
+  'llama-3.3-70b-versatile': 32768,
+  'llama-3.1-8b-instant': 8192,
+  'llama-guard-3-8b': 4096,
+  'llama3-70b-8192': 4096,
+  'llama3-8b-8192': 4096,
+  'mixtral-8x7b-32768': 16384,
+  
+  // Preview Models
+  'qwen-2.5-coder-32b': 64000,
+  'qwen-2.5-32b': 64000,
+  'deepseek-r1-distill-qwen-32b': 16384,
+  'deepseek-r1-distill-llama-70b-specdec': 16384,
+  'deepseek-r1-distill-llama-70b': 64000,
+  'llama-3.3-70b-specdec': 4096,
+  'llama-3.2-1b-preview': 8192,
+  'llama-3.2-3b-preview': 8192,
+  'llama-3.2-11b-vision-preview': 8192,
+  'llama-3.2-90b-vision-preview': 8192,
+  
 }
 
 /**
  * Perplexity
- * https://docs.perplexity.ai/docs/model-cards
+ * https://docs.perplexity.ai/guides/model-cards#supported-models
  *
- * maxTokens = input + output
+ * Values are set based on max output token limits where available
  */
 const perplexityModels = {
-  'llama-3-sonar-small-32k-chat': 32768 / 2,
-  'llama-3-sonar-small-32k-online': 28000 / 2,
-  'llama-3-sonar-large-32k-chat': 32768 / 2,
-  'llama-3-sonar-large-32k-online': 28000 / 2,
-
-  'llama-3-8b-instruct': 8192 / 2,
-  'llama-3-70b-instruct': 8192 / 2,
-  'mixtral-8x7b-instruct': 16384 / 2,
+  // Current models
+  'sonar-reasoning-pro': 8000,  // 128k context with 8k max output
+  'sonar-reasoning': 8000,      // 128k context with assumed 8k max output
+  'sonar-pro': 8000,            // 200k context with 8k max output
+  'sonar': 8000,                // 128k context with assumed 8k max output
+  'r1-1776': 8000,              // 128k context with assumed 8k max output
 }
 
 /**
@@ -65,6 +113,7 @@ const perplexityModels = {
  *
  * maxTokens = input + output
  */
+// TODO: Update these values
 const fireworksModels = {
   'accounts/fireworks/models/firefunction-v2': 8192 / 2,
   'accounts/fireworks/models/firellava-13b': 4096 / 2,
@@ -177,46 +226,77 @@ const fireworksModels = {
 }
 
 /**
- * Anthropics
+ * Anthropic
  * https://docs.anthropic.com/en/docs/about-claude/models#model-names
  *
  * maxTokens = Max output
  */
 const anthropicModels = {
-  'claude-3-5-sonnet-20240620': 4096,
-  'anthropic.claude-3-5-sonnet-20240620-v1:0': 4096,
-  'claude-3-5-sonnet@20240620': 4096,
+  // Latest Models
+  'claude-3-7-sonnet-20250219': 8192,  // Normal mode
+  'claude-3-7-sonnet-latest': 8192,     // Alias for latest claude-3-7-sonnet
+  'anthropic.claude-3-7-sonnet-20250219-v1:0': 8192,
+  'claude-3-7-sonnet@20250219': 8192,
+  
+  // Extended thinking mode for Claude 3.7
+  'claude-3-7-sonnet-20250219-extended': 64000,  // With extended thinking header
+  
+  // Claude 3.5 models
+  'claude-3-5-sonnet-20241022': 8192,  // Latest v2
+  'claude-3-5-sonnet-latest': 8192,     // Alias for latest claude-3-5-sonnet
+  'anthropic.claude-3-5-sonnet-20241022-v2:0': 8192,
+  'claude-3-5-sonnet-v2@20241022': 8192,
+  
+  'claude-3-5-sonnet-20240620': 8192,  // Previous version
+  'anthropic.claude-3-5-sonnet-20240620-v1:0': 8192,
+  'claude-3-5-sonnet-v1@20240620': 8192,
+  
+  'claude-3-5-haiku-20241022': 8192,
+  'claude-3-5-haiku-latest': 8192,     // Alias for latest claude-3-5-haiku
+  'anthropic.claude-3-5-haiku-20241022-v1:0': 8192,
+  'claude-3-5-haiku@20241022': 8192,
+  
+  // Claude 3 models
   'claude-3-opus-20240229': 4096,
-  'claude-3-sonnet-20240229': 4096,
-  'claude-3-haiku-20240307': 4096,
+  'claude-3-opus-latest': 4096,        // Alias for latest claude-3-opus
   'anthropic.claude-3-opus-20240229-v1:0': 4096,
-  'anthropic.claude-3-sonnet-20240229-v1:0': 4096,
-  'anthropic.claude-3-haiku-20240307-v1:0': 4096,
   'claude-3-opus@20240229': 4096,
+  
+  'claude-3-sonnet-20240229': 4096,
+  'claude-3-sonnet-latest': 4096,      // Alias for latest claude-3-sonnet
+  'anthropic.claude-3-sonnet-20240229-v1:0': 4096,
   'claude-3-sonnet@20240229': 4096,
+  
+  'claude-3-haiku-20240307': 4096,
+  'claude-3-haiku-latest': 4096,       // Alias for latest claude-3-haiku
+  'anthropic.claude-3-haiku-20240307-v1:0': 4096,
   'claude-3-haiku@20240307': 4096,
-
-  // Legacy models https://docs.anthropic.com/en/docs/about-claude/models#legacy-model-comparison
-  'claude-2.1': 4096,
-  'claude-2.0': 4096,
-  'claude-instant-1.2': 4096,
+  
+  // Special case - Claude 3.7 with 128k output beta header
+  'claude-3-7-sonnet-20250219-128k': 128000  // With output-128k-2025-02-19 beta header
 }
 
 /**
  * Google Generative AI
- * https://ai.google.dev/gemini-api/docs/models/gemini#model-variations
+ * https://ai.google.dev/gemini-api/docs/models/gemini
  *
  * maxTokens = Output token limit
  */
 const googleVertexModels = {
+  // Gemini 2.0 models
+  'models/gemini-2.0-flash-latest': 8192,
+  'models/gemini-2.0-flash': 8192,
+  
+  // Gemini 2.0 Flash-Lite Preview
+  'models/gemini-2.0-flash-lite-preview-02-05': 8192,
+  
+  // Gemini 1.5 models
   'models/gemini-1.5-flash-latest': 8192,
   'models/gemini-1.5-flash': 8192,
-
+  'models/gemini-1.5-flash-8b': 8192,
+  
   'models/gemini-1.5-pro-latest': 8192,
   'models/gemini-1.5-pro': 8192,
-  'models/gemini-1.0-pro': 8192,
-
-  'models/gemini-pro-vision': 4096,
 }
 
 /**
@@ -226,13 +306,32 @@ const googleVertexModels = {
  * maxTokens = input + output
  */
 const mistralModels = {
-  'open-mistral-7b': 32000 / 2,
-  'open-mixtral-8x7b': 32000 / 2,
-  'open-mixtral-8x22b': 64000 / 2,
-  'mistral-small-latest': 32000 / 2,
-  'mistral-medium-latest': 32000 / 2,
-  'mistral-large-latest': 32000 / 2,
-  'codestral-latest': 32000 / 2,
+  // Premier models
+  'mistral-large-latest': 65536,        // Currently points to mistral-large-2411 (131K context)
+  'mistral-large-2411': 65536,          // Latest version (131K context)
+  'mistral-small-latest': 16000,        // Currently points to mistral-small-2501 (32K context)
+  'mistral-small-2501': 16000,          // Latest version (32K context)
+  'mistral-saba-latest': 16000,         // Currently points to mistral-saba-2502 (32K context)
+  'mistral-saba-2502': 16000,           // Middle East and South Asia languages (32K context)
+  'codestral-latest': 128000,           // Currently points to codestral-2501 (256K context)
+  'codestral-2501': 128000,             // Latest version (256K context)
+  'ministral-3b-latest': 65536,         // Currently points to ministral-3b-2410 (131K context)
+  'ministral-3b-2410': 65536,           // Edge model (131K context)
+  'ministral-8b-latest': 65536,         // Currently points to ministral-8b-2410 (131K context)
+  'ministral-8b-2410': 65536,           // Powerful edge model (131K context)
+  
+  // Free models
+  'open-mistral-nemo': 65536,           // Multilingual model (131K context)
+  
+  // Legacy models (will be retired on 2025/03/30)
+  'open-mistral-7b': 16000,             // (32K context)
+  'open-mixtral-8x7b': 16000,           // (32K context)
+  'open-mixtral-8x22b': 32000,          // (64K context)
+  'mistral-medium-2312': 16000,         // (32K context)
+  'mistral-small-2402': 16000,          // (32K context)
+  'mistral-large-2402': 16000,          // (32K context)
+  'mistral-large-2407': 65536,          // (131K context)
+  'codestral-2405': 16000               // (32K context)
 }
 
 /**
@@ -242,12 +341,28 @@ const mistralModels = {
  * maxTokens = MAXIMUM OUTPUT TOKENS
  */
 const cohereModels = {
-  'command-r-plus': 4000,
-  'command-r': 4000,
-  command: 4000,
-  'command-nightly': 128000,
-  'command-light': 4000,
-  'command-light-nightly': 4000,
+  // Latest Command models
+  'command-r7b-12-2024': 4000,        // Small, fast December 2024 update
+  'command-r-plus-08-2024': 4000,     // August 2024 update
+  'command-r-plus-04-2024': 4000,     // April 2024 version
+  'command-r-plus': 4000,             // Alias for command-r-plus-04-2024
+  'command-r-08-2024': 4000,          // August 2024 update
+  'command-r-03-2024': 4000,          // March 2024 version
+  'command-r': 4000,                  // Alias for command-r-03-2024
+  'command': 4000,                    // Original Command model
+  'command-nightly': 4000,            // Experimental version (128K context)
+  'command-light': 4000,              // Smaller, faster version
+  'command-light-nightly': 4000,      // Experimental smaller version
+  
+  // Multilingual models (good for translation)
+  'c4ai-aya-expanse-8b': 4000,        // 8B multilingual model (23 languages)
+  'c4ai-aya-expanse-32b': 4000,       // 32B multilingual model (23 languages)
+  
+  // Platform-specific IDs
+  'cohere.command-r-plus-v1:0': 4000, // Amazon Bedrock ID
+  'cohere.command-r-v1:0': 4000,      // Amazon Bedrock ID
+  'cohere.command-text-v14': 4000,    // Amazon Bedrock ID
+  'cohere.command-light-text-v14': 4000 // Amazon Bedrock ID
 }
 
 export const modelTokens = {
