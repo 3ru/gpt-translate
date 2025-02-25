@@ -53,9 +53,9 @@ class AI {
     return initializer(baseOptions)
   }
 
-  private async generateTextRequest(text: string): Promise<string> {
+  private async generateTextRequest(prompt: string, text: string): Promise<string> {
     const messages: CoreMessage[] = [
-      { role: 'user', content: `${this.prompt}\n${text}` },
+      { role: 'user', content: `${prompt}\n${text}` },
     ]
     if (this.systemPrompt) {
       messages.unshift({ role: 'system', content: this.systemPrompt })
@@ -100,7 +100,7 @@ class AI {
     const maxToken =
       (this.getProps().maxTokens || modelTokens[this.model] || minimumTokens) /
       2
-    this.prompt = this.prompt
+    const prompt = this.prompt
       .replaceAll('{targetLanguage}', targetLanguage)
       .replaceAll('{targetFileExt}', targetFileExt)
 
@@ -114,14 +114,14 @@ class AI {
 
     for (let i = 0; i < contentChunks.length; i++) {
       if (encode(chunk + contentChunks[i]).length > maxToken) {
-        const translatedContent = await this.generateTextRequest(chunk)
+        const translatedContent = await this.generateTextRequest(prompt, chunk)
         translated += translatedContent + splitter
         chunk = ''
       }
       chunk += contentChunks[i] + (i < contentChunks.length - 1 ? splitter : '')
     }
 
-    translated += await this.generateTextRequest(chunk)
+    translated += await this.generateTextRequest(prompt, chunk)
     info('Translation completed!')
 
     return translated
