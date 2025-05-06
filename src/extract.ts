@@ -3,9 +3,9 @@ import { context } from '@actions/github'
 import { commandValidator, isValidFileExt } from './validate'
 
 type CommandParams = {
-  inputFilePath: string
-  outputFilePath: string
-  targetLang: string
+  inputFilePaths: string[]
+  outputFilePaths: string[]
+  targetLangs: string[]
 }
 
 type ManualParams = {
