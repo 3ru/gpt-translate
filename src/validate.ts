@@ -1,6 +1,6 @@
 import { availableFileExtensions } from './const'
 import path from 'path'
-import { postError, removeSymbols } from './utils'
+import { postError } from './utils'
 import { COMMAND_USAGE, INVALID_FILE_EXTENSION } from './error'
 
 export const isValidFileExt = (filename: string): boolean => {
@@ -22,36 +22,40 @@ export const commandValidator = async (
   userCommand: string | undefined,
   match: RegExpExecArray | null,
 ): Promise<{
-  inputFilePath: string
-  outputFilePath: string
-  targetLang: string
+  inputFilePaths: string[]
+  outputFilePaths: string[]
+  targetLangs: string[]
 }> => {
   if (!match || match.length < 4) {
     await postError(`Invalid command: \`${userCommand}\`\n${COMMAND_USAGE}`)
   }
 
-  const [, inputFilePath, outputFilePath, targetLang] = match!
+  const [, inputFilePathStr, outputFilePathStr, targetLangStr] = match!
 
-  if (!isValidFileExt(inputFilePath) || !isValidFileExt(outputFilePath)) {
-    await postError(INVALID_FILE_EXTENSION)
+  const inputFilePaths: string[] = []
+  const outputFilePaths: string[] = []
+
+  for (const inputFilePath of inputFilePathStr.split(',')) {
+    if (!isValidFileExt(inputFilePath)) {
+      await postError(INVALID_FILE_EXTENSION)
+    } else {
+      inputFilePaths.push(inputFilePath)
+    }
   }
 
-  const inputFileName = path.basename(inputFilePath)
-  const outputFileName = path.basename(outputFilePath)
-
-  // If multiple files are specified, input and output must be specified in the same way.
-  if (
-    (inputFileName.includes('*') && !outputFileName.includes('*')) ||
-    (!inputFileName.includes('*') && outputFileName.includes('*'))
-  ) {
-    await postError(
-      `Error: Multiple file specification mismatch.\n${inputFileName} and ${outputFileName}`,
-    )
+  for (const outputFilePath of outputFilePathStr.split(',')) {
+    if (!isValidFileExt(outputFilePath)) {
+      await postError(INVALID_FILE_EXTENSION)
+    } else {
+      outputFilePaths.push(outputFilePath)
+    }
   }
+
+  const targetLangs: string[] = targetLangStr.split(',')
 
   return {
-    inputFilePath,
-    outputFilePath,
-    targetLang: removeSymbols(targetLang),
+    inputFilePaths,
+    outputFilePaths,
+    targetLangs,
   }
 }
