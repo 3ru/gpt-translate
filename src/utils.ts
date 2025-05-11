@@ -13,10 +13,6 @@ export const isPR = () => {
   return !!payload.issue?.pull_request
 }
 
-export const removeSymbols = (input: string): string => {
-  return input.replace(/[^\w\s]/gi, '')
-}
-
 export const delay = (s: number) =>
   new Promise((resolve) => setTimeout(resolve, 1000 * s))
 

@@ -13,9 +13,9 @@ async function main() {
         await postError('You have no permission to use this bot.')
       }
       await gitAddCommentReaction('eyes')
-      const { inputFilePath, outputFilePath, targetLang } =
+      const { inputFilePaths, outputFilePaths, targetLangs } =
         await getCommandParams()
-      await translateByCommand(inputFilePath, outputFilePath, targetLang)
+      await translateByCommand(inputFilePaths, outputFilePaths, targetLangs)
 
       break
 
