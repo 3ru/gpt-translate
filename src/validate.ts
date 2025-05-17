@@ -1,5 +1,6 @@
-import { availableFileExtensions } from './const'
+import { glob } from 'glob'
 import path from 'path'
+import { availableFileExtensions } from './const'
 import { postError, removeSymbols } from './utils'
 import { COMMAND_USAGE, INVALID_FILE_EXTENSION } from './error'
 
@@ -22,36 +23,40 @@ export const commandValidator = async (
   userCommand: string | undefined,
   match: RegExpExecArray | null,
 ): Promise<{
-  inputFilePath: string
-  outputFilePath: string
-  targetLang: string
+  inputFilePaths: string[]
+  outputFilePaths: string[]
+  targetLangs: string[]
 }> => {
   if (!match || match.length < 4) {
     await postError(`Invalid command: \`${userCommand}\`\n${COMMAND_USAGE}`)
   }
 
-  const [, inputFilePath, outputFilePath, targetLang] = match!
+  const [, inputFilePathStr, outputFilePathStr, targetLangStr] = match!
 
-  if (!isValidFileExt(inputFilePath) || !isValidFileExt(outputFilePath)) {
-    await postError(INVALID_FILE_EXTENSION)
+  const inputFilePaths: string[] = []
+  const outputFilePaths: string[] = []
+
+  for (const inputFilePath of inputFilePathStr.split(',')) {
+    if (!isValidFileExt(inputFilePath)) {
+      await postError(INVALID_FILE_EXTENSION)
+    }
+    // Expand input files by glob
+    const expandedInputFilePaths = await glob(inputFilePath);
+    inputFilePaths.push(...expandedInputFilePaths)
   }
 
-  const inputFileName = path.basename(inputFilePath)
-  const outputFileName = path.basename(outputFilePath)
-
-  // If multiple files are specified, input and output must be specified in the same way.
-  if (
-    (inputFileName.includes('*') && !outputFileName.includes('*')) ||
-    (!inputFileName.includes('*') && outputFileName.includes('*'))
-  ) {
-    await postError(
-      `Error: Multiple file specification mismatch.\n${inputFileName} and ${outputFileName}`,
-    )
+  for (const outputFilePath of outputFilePathStr.split(',')) {
+    if (!isValidFileExt(outputFilePath)) {
+      await postError(INVALID_FILE_EXTENSION)
+    }
+    outputFilePaths.push(outputFilePath)
   }
+
+  const targetLangs: string[] = targetLangStr.split(',').map(removeSymbols)
 
   return {
-    inputFilePath,
-    outputFilePath,
-    targetLang: removeSymbols(targetLang),
+    inputFilePaths,
+    outputFilePaths,
+    targetLangs,
   }
 }

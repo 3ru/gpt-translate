@@ -16,26 +16,36 @@ import { createFile, generateOutputFilePaths, isFileExists } from './file'
 import translator from './ai'
 
 export const translateByCommand = async (
-  inputFilePath: string,
-  outputFilePath: string,
-  targetLang: string,
+  inputFiles: string[],
+  outputFiles: string[],
+  languages: string[],
 ) => {
+
+  if (!inputFiles.length || !outputFiles.length || !languages.length) {
+    throw new Error(
+      'Error: For comment execution, all three parameters (inputFilePaths, outputFiles and languages) are required',
+    )
+  }
+
+  if (outputFiles.length !== languages.length) {
+    throw new Error('Error: outputFiles and languages must be same length.')
+  }
+
+  const outputFilePaths: string[][] = outputFiles.map((outputFile) => generateOutputFilePaths(
+    inputFiles,
+    outputFile,
+  ))
+
+  await Promise.all(
+    languages.map(async (language, index) => {
+      return createTranslatedFiles(inputFiles, outputFilePaths[index], language)
+    }),
+  )
+
   await gitSetConfig()
   const branch = isPR() ? await gitCheckout() : await gitCreateBranch()
 
-  const inputFilePaths = await glob(inputFilePath)
-  if (inputFilePaths.length === 0) {
-    throw new Error('No input files found.')
-  }
-
-  const outputFilePaths = generateOutputFilePaths(
-    inputFilePaths,
-    outputFilePath,
-  )
-
-  await createTranslatedFiles(inputFilePaths, outputFilePaths, targetLang)
-
-  await gitCommitPush(branch, outputFilePaths)
+  await gitCommitPush(branch, outputFilePaths.flat())
   if (isPR()) {
     await gitPostComment('🎉Translation completed!')
     return
@@ -44,9 +54,9 @@ export const translateByCommand = async (
   const issueNumber = context.issue.number
   const title = '🌐 Add LLM Translations'
   const body = generatePRBody(
-    inputFilePaths,
+    inputFiles,
     outputFilePaths,
-    targetLang,
+    languages,
     issueNumber,
   )
 
