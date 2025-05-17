@@ -46161,30 +46161,33 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createTranslatedFiles = exports.translateByManual = exports.translateByCommand = void 0;
 const promises_1 = __importDefault(__nccwpck_require__(1943));
 const path_1 = __importDefault(__nccwpck_require__(6928));
-const glob_1 = __nccwpck_require__(5338);
 const github_1 = __nccwpck_require__(1065);
 const core_1 = __nccwpck_require__(5589);
 const utils_1 = __nccwpck_require__(6873);
 const git_1 = __nccwpck_require__(4428);
 const file_1 = __nccwpck_require__(1208);
 const ai_1 = __importDefault(__nccwpck_require__(4192));
-const translateByCommand = async (inputFilePath, outputFilePath, targetLang) => {
+const translateByCommand = async (inputFiles, outputFiles, languages) => {
+    if (!inputFiles.length || !outputFiles.length || !languages.length) {
+        throw new Error('Error: For comment execution, all three parameters (inputFilePaths, outputFiles and languages) are required');
+    }
+    if (outputFiles.length !== languages.length) {
+        throw new Error('Error: outputFiles and languages must be same length.');
+    }
+    const outputFilePaths = outputFiles.map((outputFile) => (0, file_1.generateOutputFilePaths)(inputFiles, outputFile));
+    await Promise.all(languages.map(async (language, index) => {
+        return (0, exports.createTranslatedFiles)(inputFiles, outputFilePaths[index], language);
+    }));
     await (0, git_1.gitSetConfig)();
     const branch = (0, utils_1.isPR)() ? await (0, git_1.gitCheckout)() : await (0, git_1.gitCreateBranch)();
-    const inputFilePaths = await (0, glob_1.glob)(inputFilePath);
-    if (inputFilePaths.length === 0) {
-        throw new Error('No input files found.');
-    }
-    const outputFilePaths = (0, file_1.generateOutputFilePaths)(inputFilePaths, outputFilePath);
-    await (0, exports.createTranslatedFiles)(inputFilePaths, outputFilePaths, targetLang);
-    await (0, git_1.gitCommitPush)(branch, outputFilePaths);
+    await (0, git_1.gitCommitPush)(branch, outputFilePaths.flat());
     if ((0, utils_1.isPR)()) {
         await (0, git_1.gitPostComment)('🎉Translation completed!');
         return;
     }
     const issueNumber = github_1.context.issue.number;
     const title = '🌐 Add LLM Translations';
-    const body = (0, utils_1.generatePRBody)(inputFilePaths, outputFilePaths, targetLang, issueNumber);
+    const body = (0, utils_1.generatePRBody)(inputFiles, outputFilePaths, languages, issueNumber);
     await (0, git_1.gitCreatePullRequest)(branch, title, body);
     await (0, git_1.gitPostComment)('🎉Translation PR created!');
 };
@@ -46269,36 +46272,71 @@ const removeSymbols = (input) => {
 exports.removeSymbols = removeSymbols;
 const delay = (s) => new Promise((resolve) => setTimeout(resolve, 1000 * s));
 exports.delay = delay;
-const generatePRBody = (inputFilePaths, outputFilePaths, targetLang, issueNumber) => {
-    const generateRow = (label, filePaths) => {
-        let result = [];
-        if (Array.isArray(filePaths[0])) {
-            // filePaths: string[][]
-            let cnt = -1;
-            filePaths.forEach((subArr) => {
-                // subArr: string[]
-                subArr.forEach((filePath) => {
-                    cnt++;
-                    return result.push(`${cnt > 0 ? '|' : `|**${label}**`}|\`${filePath}\`|`);
-                });
-            });
+const generatePRBody = (sourceFilePaths, translatedFilePaths, targetLanguages, issueNumber) => {
+    // Convert targetLanguages to array if it's a single string
+    const languages = Array.isArray(targetLanguages) ? targetLanguages : [targetLanguages];
+    // Create an appropriate title based on the number of languages
+    let title;
+    if (languages.length > 1) {
+        // For multiple languages, show a summary with limited language names to avoid title length issues
+        if (languages.length <= 3) {
+            // Show all languages when there are 3 or fewer
+            const languageSummary = languages.join(", ");
+            title = `## ✅ Translated to ${languages.length} languages (${languageSummary})`;
         }
         else {
-            // filePaths: string[]
-            filePaths.forEach((filePath, i) => {
-                return result.push(`${i > 0 ? '|' : `|**${label}**`}|\`${filePath}\`|`);
-            });
+            // For 4+ languages, show first two with a count of remaining ones
+            const visibleLanguages = languages.slice(0, 2).join(", ");
+            const hiddenCount = languages.length - 2;
+            title = `## ✅ Translated to ${languages.length} languages (${visibleLanguages}, +${hiddenCount} more)`;
         }
-        return result.join('\n');
-    };
-    return `## ✅ LLM Translation completed
-  |**Name**|**Value**|
-  |---|---|
-  ${generateRow('Source', inputFilePaths)}
-  ${generateRow('Output', outputFilePaths)}
-  |**Language**|${Array.isArray(targetLang) ? targetLang.join(', ') : targetLang}|
-  ${issueNumber ? `|**Issue**|#${issueNumber}|` : ''}
-  `;
+    }
+    else {
+        // For a single language, simply name it
+        title = `## ✅ Translated to ${languages[0]}`;
+    }
+    // Add file count info to the title
+    const fileCount = sourceFilePaths.length;
+    const fileCountText = `${fileCount} file${fileCount !== 1 ? 's' : ''}`;
+    // Combine title components
+    let prBody = `${title} - ${fileCountText}\n\n`;
+    // Create the table header with proper column alignment
+    prBody += `| **Source** | **Output** | **Language** |\n`;
+    prBody += `| :--- | :--- | :--- |\n`;
+    // Generate table rows - now with separate rows for each translation
+    for (let sourceIndex = 0; sourceIndex < sourceFilePaths.length; sourceIndex++) {
+        const sourcePath = sourceFilePaths[sourceIndex];
+        // Handle different output file structures
+        if (Array.isArray(translatedFilePaths[0])) {
+            // Multi-language case: create a separate row for each language
+            for (let langIndex = 0; langIndex < translatedFilePaths.length; langIndex++) {
+                const translationsForLanguage = translatedFilePaths[langIndex];
+                const translatedFile = translationsForLanguage[sourceIndex] || '';
+                const language = languages[langIndex] || '';
+                // For the first language of this source file, include the source
+                if (langIndex === 0) {
+                    prBody += `| \`${sourcePath}\` | \`${translatedFile}\` | ${language} |\n`;
+                }
+                else {
+                    // For subsequent languages, leave the Source cell empty
+                    prBody += `|  | \`${translatedFile}\` | ${language} |\n`;
+                }
+            }
+            // Add a separator row if this isn't the last source file
+            if (sourceIndex < sourceFilePaths.length - 1) {
+                prBody += `| | | |\n`;
+            }
+        }
+        else {
+            // Single-language case: just one row per source file
+            prBody += `| \`${sourcePath}\` | \`${translatedFilePaths[sourceIndex] || ''}\` | ${languages[0] || ''} |\n`;
+        }
+    }
+    // Add related issue reference below the table if provided
+    if (issueNumber) {
+        prBody += `\n**Related Issue**: #${issueNumber}\n`;
+    }
+    return prBody;
 };
 exports.generatePRBody = generatePRBody;
 /**
@@ -46330,8 +46368,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.commandValidator = exports.isValidFileExt = void 0;
-const const_1 = __nccwpck_require__(8227);
+const glob_1 = __nccwpck_require__(5338);
 const path_1 = __importDefault(__nccwpck_require__(6928));
+const const_1 = __nccwpck_require__(8227);
 const utils_1 = __nccwpck_require__(6873);
 const error_1 = __nccwpck_require__(6566);
 const isValidFileExt = (filename) => {
@@ -46351,21 +46390,28 @@ const commandValidator = async (userCommand, match) => {
     if (!match || match.length < 4) {
         await (0, utils_1.postError)(`Invalid command: \`${userCommand}\`\n${error_1.COMMAND_USAGE}`);
     }
-    const [, inputFilePath, outputFilePath, targetLang] = match;
-    if (!(0, exports.isValidFileExt)(inputFilePath) || !(0, exports.isValidFileExt)(outputFilePath)) {
-        await (0, utils_1.postError)(error_1.INVALID_FILE_EXTENSION);
+    const [, inputFilePathStr, outputFilePathStr, targetLangStr] = match;
+    const inputFilePaths = [];
+    const outputFilePaths = [];
+    for (const inputFilePath of inputFilePathStr.split(',')) {
+        if (!(0, exports.isValidFileExt)(inputFilePath)) {
+            await (0, utils_1.postError)(error_1.INVALID_FILE_EXTENSION);
+        }
+        // Expand input files by glob
+        const expandedInputFilePaths = await (0, glob_1.glob)(inputFilePath);
+        inputFilePaths.push(...expandedInputFilePaths);
     }
-    const inputFileName = path_1.default.basename(inputFilePath);
-    const outputFileName = path_1.default.basename(outputFilePath);
-    // If multiple files are specified, input and output must be specified in the same way.
-    if ((inputFileName.includes('*') && !outputFileName.includes('*')) ||
-        (!inputFileName.includes('*') && outputFileName.includes('*'))) {
-        await (0, utils_1.postError)(`Error: Multiple file specification mismatch.\n${inputFileName} and ${outputFileName}`);
+    for (const outputFilePath of outputFilePathStr.split(',')) {
+        if (!(0, exports.isValidFileExt)(outputFilePath)) {
+            await (0, utils_1.postError)(error_1.INVALID_FILE_EXTENSION);
+        }
+        outputFilePaths.push(outputFilePath);
     }
+    const targetLangs = targetLangStr.split(',').map(utils_1.removeSymbols);
     return {
-        inputFilePath,
-        outputFilePath,
-        targetLang: (0, utils_1.removeSymbols)(targetLang),
+        inputFilePaths,
+        outputFilePaths,
+        targetLangs,
     };
 };
 exports.commandValidator = commandValidator;
@@ -49703,7 +49749,7 @@ exports.GlobStream = GlobStream;
 
 /***/ }),
 
-/***/ 9334:
+/***/ 6953:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -50522,7 +50568,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.unescape = exports.escape = exports.AST = exports.Minimatch = exports.match = exports.makeRe = exports.braceExpand = exports.defaults = exports.filter = exports.GLOBSTAR = exports.sep = exports.minimatch = void 0;
 const brace_expansion_1 = __importDefault(__nccwpck_require__(9802));
-const assert_valid_pattern_js_1 = __nccwpck_require__(9334);
+const assert_valid_pattern_js_1 = __nccwpck_require__(6953);
 const ast_js_1 = __nccwpck_require__(8910);
 const escape_js_1 = __nccwpck_require__(5087);
 const unescape_js_1 = __nccwpck_require__(3880);
@@ -56326,7 +56372,7 @@ __exportStar(__nccwpck_require__(9457), exports);
 __exportStar(__nccwpck_require__(5340), exports);
 __exportStar(__nccwpck_require__(903), exports);
 __exportStar(__nccwpck_require__(6045), exports);
-__exportStar(__nccwpck_require__(6953), exports);
+__exportStar(__nccwpck_require__(9334), exports);
 __exportStar(__nccwpck_require__(5547), exports);
 __exportStar(__nccwpck_require__(9838), exports);
 __exportStar(__nccwpck_require__(4823), exports);
@@ -56371,7 +56417,7 @@ const set_js_1 = __nccwpck_require__(9457);
 const string_js_1 = __nccwpck_require__(5340);
 const tuple_js_1 = __nccwpck_require__(903);
 const undefined_js_1 = __nccwpck_require__(6045);
-const union_js_1 = __nccwpck_require__(6953);
+const union_js_1 = __nccwpck_require__(9334);
 const unknown_js_1 = __nccwpck_require__(5547);
 const readonly_js_1 = __nccwpck_require__(8175);
 const Options_js_1 = __nccwpck_require__(3052);
@@ -56995,7 +57041,7 @@ exports.parseNullDef = parseNullDef;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.parseNullableDef = void 0;
 const parseDef_js_1 = __nccwpck_require__(8222);
-const union_js_1 = __nccwpck_require__(6953);
+const union_js_1 = __nccwpck_require__(9334);
 function parseNullableDef(def, refs) {
     if (["ZodString", "ZodNumber", "ZodBigInt", "ZodBoolean", "ZodNull"].includes(def.innerType._def.typeName) &&
         (!def.innerType._def.checks || !def.innerType._def.checks.length)) {
@@ -57663,7 +57709,7 @@ exports.parseUndefinedDef = parseUndefinedDef;
 
 /***/ }),
 
-/***/ 6953:
+/***/ 9334:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -58083,8 +58129,8 @@ async function main() {
                 await (0, utils_1.postError)('You have no permission to use this bot.');
             }
             await (0, git_1.gitAddCommentReaction)('eyes');
-            const { inputFilePath, outputFilePath, targetLang } = await (0, extract_1.getCommandParams)();
-            await (0, translate_1.translateByCommand)(inputFilePath, outputFilePath, targetLang);
+            const { inputFilePaths, outputFilePaths, targetLangs } = await (0, extract_1.getCommandParams)();
+            await (0, translate_1.translateByCommand)(inputFilePaths, outputFilePaths, targetLangs);
             break;
         case 'push':
         case 'workflow_dispatch':
