@@ -1,6 +1,7 @@
-import { availableFileExtensions } from './const'
+import { glob } from 'glob'
 import path from 'path'
-import { postError } from './utils'
+import { availableFileExtensions } from './const'
+import { postError, removeSymbols } from './utils'
 import { COMMAND_USAGE, INVALID_FILE_EXTENSION } from './error'
 
 export const isValidFileExt = (filename: string): boolean => {
@@ -38,20 +39,20 @@ export const commandValidator = async (
   for (const inputFilePath of inputFilePathStr.split(',')) {
     if (!isValidFileExt(inputFilePath)) {
       await postError(INVALID_FILE_EXTENSION)
-    } else {
-      inputFilePaths.push(inputFilePath)
     }
+    // Expand input files by glob
+    const expandedInputFilePaths = await glob(inputFilePath);
+    inputFilePaths.push(...expandedInputFilePaths)
   }
 
   for (const outputFilePath of outputFilePathStr.split(',')) {
     if (!isValidFileExt(outputFilePath)) {
       await postError(INVALID_FILE_EXTENSION)
-    } else {
-      outputFilePaths.push(outputFilePath)
     }
+    outputFilePaths.push(outputFilePath)
   }
 
-  const targetLangs: string[] = targetLangStr.split(',')
+  const targetLangs: string[] = targetLangStr.split(',').map(removeSymbols)
 
   return {
     inputFilePaths,
